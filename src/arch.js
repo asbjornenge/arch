@@ -11,13 +11,20 @@ export default function Arch() {
       <Top>
         <div>logo</div>
         <PanSelector>
-          <Pan selected={panning === 'doc'} onClick={() => setPanning('doc')}>Doc</Pan>
+          <Pan selected={panning === 'notes'} onClick={() => setPanning('notes')}>Notes</Pan>
           <Pan selected={panning === 'both'} onClick={() => setPanning('both')}>Both</Pan>
           <Pan selected={panning === 'diagram'} onClick={() => setPanning('diagram')}>Diagram</Pan>
         </PanSelector>
         <div>links</div>
       </Top>
-      <Workspace></Workspace>
+      <Workspace>
+        { ['notes','both'].indexOf(panning) >= 0 &&
+          <MarkdownSpace>markdown field</MarkdownSpace>
+        }
+        { ['diagram','both'].indexOf(panning) >= 0 &&
+          <DiagramSpace>diagram field</DiagramSpace>
+        }
+      </Workspace>
     </Wrapper>
   )
 }
@@ -35,7 +42,16 @@ const Top = styled.div`
 `
 
 const Workspace = styled.div`
+  display: flex;
+`
 
+const MarkdownSpace = styled.div`
+  flex: 1;
+  border-right: 1px solid var(--color-border-grey);
+`
+
+const DiagramSpace = styled.div`
+  flex: 2;
 `
 
 const PanSelector = styled.div`
@@ -46,10 +62,11 @@ const PanSelector = styled.div`
 
 const Pan = styled.div`
   padding: 5px 10px;
+  width: 50px;
   text-align: center;
   color: var(--color-text-grey);
   font-size: 0.8em;
   cursor: pointer;
   user-select: none;
-  background-color: ${props => props?.selected ? 'pink': 'inherit'};
+  background-color: ${props => props?.selected ? 'var(--color-bg-grey)': 'inherit'};
 `
