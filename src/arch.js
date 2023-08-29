@@ -1,6 +1,7 @@
 import { useState } from 'react'
 import styled from 'styled-components'
 import MarkdownEditor from './markdown.js'
+import DiagramEditor from './diagram.js'
 
 export default function Arch() {
   // eslint-disable-next-line
@@ -25,7 +26,9 @@ export default function Arch() {
           </MarkdownSpace>
         }
         { ['diagram','both'].indexOf(panning) >= 0 &&
-          <DiagramSpace>diagram field</DiagramSpace>
+          <DiagramSpace>
+            <DiagramEditor />
+          </DiagramSpace>
         }
       </Workspace>
     </Wrapper>
