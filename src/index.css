@@ -18,6 +18,8 @@ code {
     monospace;
 }
 
+/** Mods **/
+
 .EasyMDEContainer .editor-toolbar {
   border-top: 0;
   border-right: 0;
@@ -30,6 +32,13 @@ code {
   border-top: 1px solid var(--color-border-grey);
   border-radius: 0;
 }
+
+.react-flow__controls {
+  display: flex;
+  flex-direction: column-reverse;
+}
+
+/** Custom Elements **/
 
 .archButton {
   color: var(--color-text-grey);

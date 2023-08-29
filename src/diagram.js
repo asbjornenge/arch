@@ -2,7 +2,6 @@ import { useState, useRef, useCallback } from 'react'
 import ReactFlow, {
   Panel,
   MiniMap,
-  Controls,
   Background,
   MarkerType,
   useNodesState,
@@ -13,6 +12,7 @@ import NodeEditor from './nodes/NodeEditor'
 import ContextMenu from './nodes/ContextMenu' 
 import ArchNode from './nodes/ArchNode'
 import ArchEdge from './nodes/ArchEdge'
+import ArchControls from './nodes/ArchControls'
 import ArchConnectionLine from './nodes/ArchConnectionLine'
 import 'reactflow/dist/style.css'
 
@@ -21,7 +21,7 @@ const EDGE_COLOR = 'black'
 
 const initialNodes = [
   { id: '1', type: 'arch', position: { x: 0, y: 0 }, data: { label: '1' } },
-  { id: '2', type: 'arch', position: { x: 100, y: 0 }, data: { label: '2' } }
+  { id: '2', type: 'arch', position: { x: 300, y: 300 }, data: { label: '2' } }
 ]
 
 const initialEdges = []
@@ -94,7 +94,7 @@ export default function DiagramEditor({ offsetY, offsetX }) {
       connectionLineComponent={ArchConnectionLine}
     >
       <MiniMap />
-      <Controls />
+      <ArchControls />
       <Background />
       {menu && <ContextMenu onClick={onPaneClick} {...menu} setNode={setNode} />}
       {node && <Panel position="top-right"><NodeEditor key={node?.id} node={node} setNode={setNode} setNodes={setNodes} /></Panel>}
