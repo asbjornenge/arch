@@ -4,20 +4,49 @@ import ReactFlow, {
   MiniMap,
   Controls,
   Background,
+  MarkerType,
   useNodesState,
   useEdgesState,
   addEdge,
 } from 'reactflow'
 import NodeEditor from './nodes/NodeEditor' 
 import ContextMenu from './nodes/ContextMenu' 
+import ArchNode from './nodes/ArchNode'
+import ArchEdge from './nodes/ArchEdge'
+import ArchConnectionLine from './nodes/ArchConnectionLine'
 import 'reactflow/dist/style.css'
 
+const EDGE_STROKE_WIDTH = 2
+const EDGE_COLOR = 'black'
+
 const initialNodes = [
-  { id: '1', position: { x: 0, y: 0 }, data: { label: '1' } },
-  { id: '2', position: { x: 0, y: 100 }, data: { label: '2' } },
+  { id: '1', type: 'arch', position: { x: 0, y: 0 }, data: { label: '1' } },
+  { id: '2', type: 'arch', position: { x: 100, y: 0 }, data: { label: '2' } }
 ]
 
-const initialEdges = [{ id: 'e1-2', source: '1', target: '2' }]
+const initialEdges = []
+
+const nodeTypes = {
+  arch : ArchNode
+}
+
+const edgeTypes = {
+  arch: ArchEdge,
+}
+
+const connectionLineStyle = {
+  strokeWidth: EDGE_STROKE_WIDTH,
+  stroke: EDGE_COLOR,
+}
+
+const defaultEdgeOptions = {
+  style: { strokeWidth: EDGE_STROKE_WIDTH, stroke: EDGE_COLOR },
+  type: 'arch',
+  markerEnd: {
+    type: MarkerType.ArrowClosed,
+    color: EDGE_COLOR,
+  },
+}
 
 export default function DiagramEditor({ offsetY, offsetX }) {
   // eslint-disable-next-line
@@ -53,11 +82,16 @@ export default function DiagramEditor({ offsetY, offsetX }) {
       ref={ref}
       nodes={nodes}
       edges={edges}
+      nodeTypes={nodeTypes}
+      edgeTypes={edgeTypes}
       onConnect={onConnect}
       onPaneClick={onPaneClick}
       onNodesChange={onNodesChange}
       onEdgesChange={onEdgesChange}
       onNodeContextMenu={onNodeContextMenu}
+      defaultEdgeOptions={defaultEdgeOptions}
+      connectionLineStyle={connectionLineStyle}
+      connectionLineComponent={ArchConnectionLine}
     >
       <MiniMap />
       <Controls />
