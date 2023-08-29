@@ -1,14 +1,45 @@
-import { useState } from 'react'
+import { useState, useCallback, useEffect } from 'react'
 import styled from 'styled-components'
 import MarkdownEditor from './markdown.js'
 import DiagramEditor from './diagram.js'
+
+const TOP_HEIGHT = 30
+const WORKSPACE_HEIGHT_MARGIN = 12
+
+const getSize = () => {
+  return { 
+    width: window.innerWidth,
+    height: window.innerHeight,
+  }
+}
 
 export default function Arch() {
   // eslint-disable-next-line
   const [file, setFile] = useState(null)
   const [panning, setPanning] = useState('both')
+  const [size, setSize] = useState(getSize())
 
-  console.log(panning)
+  const handleResize = useCallback(() => {
+    let ticking = false;
+    if (!ticking) {
+      window.requestAnimationFrame(() => {
+        setSize(getSize());
+        ticking = false;
+      });
+      ticking = true;
+    } 
+  }, [])
+
+  useEffect(() => {
+    window.addEventListener('resize', handleResize);
+    return () => window.removeEventListener('resize', handleResize);
+  }, [handleResize])
+
+  let markdownWidth = size.width / 3
+  let diagramWidth = size.width - markdownWidth
+  const workspaceHeight = size.height - TOP_HEIGHT - WORKSPACE_HEIGHT_MARGIN
+  if (panning === 'notes') markdownWidth = size.width
+  if (panning === 'diagram') diagramWidth = size.width
 
   return (
     <Wrapper>
@@ -22,16 +53,12 @@ export default function Arch() {
         <div>links</div>
       </Top>
       <Workspace>
-        { ['notes','both'].indexOf(panning) >= 0 &&
-          <MarkdownSpace>
-            <MarkdownEditor />
-          </MarkdownSpace>
-        }
-        { ['diagram','both'].indexOf(panning) >= 0 &&
-          <DiagramSpace>
-            <DiagramEditor />
-          </DiagramSpace>
-        }
+        <MarkdownSpace width={markdownWidth} height={workspaceHeight} hidden={['both', 'notes'].indexOf(panning) < 0}>
+          <MarkdownEditor height={workspaceHeight} />
+        </MarkdownSpace>
+        <DiagramSpace width={diagramWidth} height={workspaceHeight} hidden={['both', 'diagram'].indexOf(panning) < 0}>
+          <DiagramEditor offsetY={TOP_HEIGHT} offsetX={size.width - diagramWidth} />
+        </DiagramSpace>
       </Workspace>
     </Wrapper>
   )
@@ -45,8 +72,10 @@ const Wrapper = styled.div`
 const Top = styled.div`
   display: flex;
   justify-content: space-between;
+  align-items: center;
   padding: 5px;
   border-bottom: 1px solid var(--color-border-grey);
+  height: ${TOP_HEIGHT}px;
 `
 
 const Workspace = styled.div`
@@ -54,12 +83,16 @@ const Workspace = styled.div`
 `
 
 const MarkdownSpace = styled.div`
-  flex: 1;
+  ${props => props.hidden ? 'display: none;' : ''}
+  width: ${props => props.width}px;
+  height: ${props => props.height}px;
   border-right: 1px solid var(--color-border-grey);
 `
 
 const DiagramSpace = styled.div`
-  flex: 2;
+  ${props => props.hidden ? 'display: none;' : ''}
+  width: ${props => props.width}px;
+  height: ${props => props.height}px;
 `
 
 const PanSelector = styled.div`

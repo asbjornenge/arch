@@ -17,7 +17,7 @@ const initialNodes = [
 
 const initialEdges = [{ id: 'e1-2', source: '1', target: '2' }]
 
-export default function DiagramEditor() {
+export default function DiagramEditor({ offsetY, offsetX }) {
   // eslint-disable-next-line
   const [nodes, setNodes, onNodesChange] = useNodesState(initialNodes)
   const [edges, setEdges, onEdgesChange] = useEdgesState(initialEdges)
@@ -26,24 +26,19 @@ export default function DiagramEditor() {
 
   const onConnect = useCallback((params) => setEdges((eds) => addEdge(params, eds)), [setEdges])
 
-  const onNodeContextMenu = useCallback(
-    (event, node) => {
-      // Prevent native context menu from showing
-      event.preventDefault();
+  const onNodeContextMenu = (event, node) => {
+    event.preventDefault();
+    //const pane = ref.current.getBoundingClientRect(); Can use to calc edge collision with menu
 
-      // Calculate position of the context menu. We want to make sure it
-      // doesn't get positioned off-screen.
-      const pane = ref.current.getBoundingClientRect();
-      setMenu({
-        id: node.id,
-        top: event.clientY < pane.height - 200 && event.clientY,
-        left: event.clientX < pane.width - 200 && event.clientX,
-        right: event.clientX >= pane.width - 200 && pane.width - event.clientX,
-        bottom: event.clientY >= pane.height - 200 && pane.height - event.clientY,
-      })
-    },
-    [setMenu]
-  )
+    let top = event.clientY - offsetY
+    let left = event.clientX - offsetX
+
+    setMenu({
+      id: node.id,
+      top: top,
+      left: left,
+    })
+  }
 
   const onPaneClick = useCallback(() => setMenu(null), [setMenu])
 
