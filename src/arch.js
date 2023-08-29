@@ -36,6 +36,7 @@ export default function Arch() {
   }, [handleResize])
 
   let markdownWidth = size.width / 3
+  if (markdownWidth < 440) markdownWidth = 440 // Smallest possible to avoid menu wrapping
   let diagramWidth = size.width - markdownWidth
   const workspaceHeight = size.height - TOP_HEIGHT - WORKSPACE_HEIGHT_MARGIN
   if (panning === 'notes') markdownWidth = size.width
