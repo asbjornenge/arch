@@ -1,5 +1,6 @@
 import { useState, useRef, useCallback } from 'react'
 import ReactFlow, {
+  Panel,
   MiniMap,
   Controls,
   Background,
@@ -7,6 +8,7 @@ import ReactFlow, {
   useEdgesState,
   addEdge,
 } from 'reactflow'
+import NodeEditor from './nodes/NodeEditor' 
 import ContextMenu from './nodes/ContextMenu' 
 import 'reactflow/dist/style.css'
 
@@ -21,6 +23,7 @@ export default function DiagramEditor({ offsetY, offsetX }) {
   // eslint-disable-next-line
   const [nodes, setNodes, onNodesChange] = useNodesState(initialNodes)
   const [edges, setEdges, onEdgesChange] = useEdgesState(initialEdges)
+  const [node, setNode] = useState(null)
   const [menu, setMenu] = useState(null)
   const ref = useRef(null)
 
@@ -40,7 +43,10 @@ export default function DiagramEditor({ offsetY, offsetX }) {
     })
   }
 
-  const onPaneClick = useCallback(() => setMenu(null), [setMenu])
+  const onPaneClick = useCallback(() => { 
+    setMenu(null)
+//    setNode(null)
+  }, [setMenu])
 
   return (
     <ReactFlow
@@ -56,7 +62,8 @@ export default function DiagramEditor({ offsetY, offsetX }) {
       <MiniMap />
       <Controls />
       <Background />
-      {menu && <ContextMenu onClick={onPaneClick} {...menu} />}
+      {menu && <ContextMenu onClick={onPaneClick} {...menu} setNode={setNode} />}
+      {node && <Panel position="top-right"><NodeEditor key={node?.id} node={node} setNode={setNode} setNodes={setNodes} /></Panel>}
     </ReactFlow>
   )
 }

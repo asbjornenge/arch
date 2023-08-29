@@ -2,7 +2,7 @@ import React, { useCallback } from 'react'
 import { useReactFlow } from 'reactflow'
 import './ContextMenu.css'
 
-export default function ContextMenu({ id, top, left, right, bottom, ...props }) {
+export default function ContextMenu({ id, top, left, right, bottom, setNode, ...props }) {
   const { getNode, setNodes, addNodes, setEdges } = useReactFlow();
   const duplicateNode = useCallback(() => {
     const node = getNode(id);
@@ -19,11 +19,14 @@ export default function ContextMenu({ id, top, left, right, bottom, ...props }) 
     setEdges((edges) => edges.filter((edge) => edge.source !== id));
   }, [id, setNodes, setEdges]);
 
+  const editNode = useCallback(() => {
+    const node = getNode(id)
+    setNode(node)
+  }, [id, setNode, getNode])
+
   return (
     <div style={{ top, left, right, bottom }} className="context-menu" {...props}>
-      <p style={{ margin: '0.5em' }}>
-        <small>node: {id}</small>
-      </p>
+      <button onClick={editNode}>edit</button>
       <button onClick={duplicateNode}>duplicate</button>
       <button onClick={deleteNode}>delete</button>
     </div>
