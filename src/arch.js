@@ -8,6 +8,8 @@ export default function Arch() {
   const [file, setFile] = useState(null)
   const [panning, setPanning] = useState('both')
 
+  console.log(panning)
+
   return (
     <Wrapper>
       <Top>

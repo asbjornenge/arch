@@ -18,3 +18,15 @@ code {
     monospace;
 }
 
+.EasyMDEContainer .editor-toolbar {
+  border-top: 0;
+  border-right: 0;
+  border-left: 0;
+  border-radius: 0;
+}
+
+.EasyMDEContainer .CodeMirror.CodeMirror-wrap {
+  border: 0;
+  border-top: 1px solid var(--color-border-grey);
+  border-radius: 0;
+}
