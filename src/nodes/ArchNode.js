@@ -1,16 +1,20 @@
 import { 
   Handle, 
   Position, 
-  useStore, 
+  useStore,
+  NodeResizeControl 
 } from 'reactflow'
 import { controlState } from './ArchControls'
 import './ArchNode.css'
 
 const connectionNodeIdSelector = (state) => state.connectionNodeId;
 const addingEdgeState = (state) => state.adding;
+const resizeControlStyle = {
+  background: 'transparent',
+  border: 'none',
+}
 
-
-export default function CustomNode({ id, data }) {
+export default function CustomNode({ id, data, selected }) {
   const connectionNodeId = useStore(connectionNodeIdSelector)
   const isAddingEdge = controlState(addingEdgeState)
 
@@ -18,31 +22,52 @@ export default function CustomNode({ id, data }) {
 
   const sourceStyle = { zIndex: -1 }
   const targetStyle = { zIndex: -1 }
+  const nodeStyle = {}
   if (isAddingEdge) sourceStyle.zIndex = 1
   if (isTarget) targetStyle.zIndex = 2
+  if (isTarget) nodeStyle.borderStyle = 'dashed'
 
   return (
-    <div className="ArchNode">
-      <div
-        className="ArchNodeBody"
-        style={{
-          borderStyle: isTarget ? 'dashed' : 'solid',
-        }}
-      >
-        <Handle
-          className="ArchHandle"
-          position={Position.Right}
-          type="source"
-          style={sourceStyle}
-        />
-        <Handle 
-          className="ArchHandle"
-          position={Position.Left} 
-          type="target" 
-          style={targetStyle}
-        />
-        {data?.label}
-      </div>
+    <div className="ArchNode" style={nodeStyle}>
+      { selected &&
+      <NodeResizeControl style={resizeControlStyle} isVisible={selected} minWidth={100} minHeight={50}>
+        <ResizeIcon />
+      </NodeResizeControl>
+      }
+      <Handle
+        className="ArchHandle"
+        position={Position.Right}
+        type="source"
+        style={sourceStyle}
+      />
+      <Handle 
+        className="ArchHandle"
+        position={Position.Left} 
+        type="target" 
+        style={targetStyle}
+      />
+      {data?.label}
     </div>
+  );
+}
+
+function ResizeIcon() {
+  return (
+    <svg
+      xmlns="http://www.w3.org/2000/svg"
+      width="20"
+      height="20"
+      viewBox="0 0 24 24"
+      strokeWidth="2"
+      stroke="black"
+      fill="none"
+      strokeLinecap="round"
+      strokeLinejoin="round"
+      style={{ position: 'absolute', right: 5, bottom: 5 }}
+    >
+      <path stroke="none" d="M0 0h24v24H0z" fill="none" />
+      <polyline points="16 20 20 20 20 16" />
+      <line x1="14" y1="14" x2="20" y2="20" />
+    </svg>
   );
 }
