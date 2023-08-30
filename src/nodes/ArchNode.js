@@ -1,19 +1,25 @@
-import { Handle, Position, useStore } from 'reactflow';
+import { 
+  Handle, 
+  Position, 
+  useStore, 
+} from 'reactflow'
 import { controlState } from './ArchControls'
 import './ArchNode.css'
 
 const connectionNodeIdSelector = (state) => state.connectionNodeId;
 const addingEdgeState = (state) => state.adding;
 
-const sourceStyle = { zIndex: 1 };
 
 export default function CustomNode({ id, data }) {
-  const connectionNodeId = useStore(connectionNodeIdSelector);
-  const addingEdge = controlState(addingEdgeState);
+  const connectionNodeId = useStore(connectionNodeIdSelector)
+  const isAddingEdge = controlState(addingEdgeState)
 
-  const isConnecting = !!connectionNodeId;
   const isTarget = connectionNodeId && connectionNodeId !== id;
-  const handleClass = `ArchHandle ${addingEdge ? 'enable' : ''}`
+
+  const sourceStyle = { zIndex: -1 }
+  const targetStyle = { zIndex: -1 }
+  if (isAddingEdge) sourceStyle.zIndex = 1
+  if (isTarget) targetStyle.zIndex = 2
 
   return (
     <div className="ArchNode">
@@ -23,18 +29,18 @@ export default function CustomNode({ id, data }) {
           borderStyle: isTarget ? 'dashed' : 'solid',
         }}
       >
-        {/* If handles are conditionally rendered and not present initially, you need to update the node internals https://reactflow.dev/docs/api/hooks/use-update-node-internals/ */}
-        {/* In this case we don't need to use useUpdateNodeInternals, since !isConnecting is true at the beginning and all handles are rendered initially. */}
-        {!isConnecting && (
-          <Handle
-            className={handleClass}
-            position={Position.Right}
-            type="source"
-            style={sourceStyle}
-          />
-        )}
-
-        <Handle className={handleClass} position={Position.Left} type="target" />
+        <Handle
+          className="ArchHandle"
+          position={Position.Right}
+          type="source"
+          style={sourceStyle}
+        />
+        <Handle 
+          className="ArchHandle"
+          position={Position.Left} 
+          type="target" 
+          style={targetStyle}
+        />
         {data?.label}
       </div>
     </div>
