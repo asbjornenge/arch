@@ -1,4 +1,5 @@
 import React, { useCallback } from 'react'
+import { uid } from 'uid'
 import { useReactFlow } from 'reactflow'
 import './ContextMenu.css'
 
@@ -11,8 +12,7 @@ export default function ContextMenu({ id, top, left, right, bottom, setNode, ...
       y: node.position.y + 50,
     };
 
-    // TODO, use uid(8) instead of copy !?
-    addNodes({ ...node, id: `${node.id}-copy`, position });
+    addNodes({ ...node, id: uid(8), position });
   }, [id, getNode, addNodes]);
 
   const deleteNode = useCallback(() => {
