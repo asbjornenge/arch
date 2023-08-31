@@ -2,6 +2,7 @@ import { useState, useCallback, useEffect } from 'react'
 import styled from 'styled-components'
 import MarkdownEditor from './markdown.js'
 import DiagramEditor from './diagram.js'
+import archLogoSvg from './graphics/logo.svg'
 
 const TOP_HEIGHT = 30
 const WORKSPACE_HEIGHT_MARGIN = 12
@@ -45,7 +46,7 @@ export default function Arch() {
   return (
     <Wrapper>
       <Top>
-        <div>logo</div>
+        <div><Logo src={archLogoSvg} /></div>
         <PanSelector>
           <Pan selected={panning === 'notes'} onClick={() => setPanning('notes')}>Notes</Pan>
           <Pan selected={panning === 'both'} onClick={() => setPanning('both')}>Both</Pan>
@@ -77,6 +78,10 @@ const Top = styled.div`
   padding: 5px;
   border-bottom: 1px solid var(--color-border-grey);
   height: ${TOP_HEIGHT}px;
+`
+
+const Logo = styled.img`
+  height: 15px;
 `
 
 const Workspace = styled.div`
