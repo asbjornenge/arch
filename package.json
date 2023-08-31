@@ -16,6 +16,7 @@
     "react-simplemde-editor": "^5.2.0",
     "reactflow": "^11.8.3",
     "styled-components": "^6.0.7",
+    "uid": "^2.0.2",
     "web-vitals": "^2.1.4"
   },
   "scripts": {

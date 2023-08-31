@@ -94,7 +94,7 @@ export default function DiagramEditor({ offsetY, offsetX }) {
       connectionLineComponent={ArchConnectionLine}
     >
       <MiniMap />
-      <ArchControls />
+      <ArchControls setNodes={setNodes} />
       <Background />
       {menu && <ContextMenu onClick={onPaneClick} {...menu} setNode={setNode} />}
       {node && <Panel position="top-right"><NodeEditor key={node?.id} node={node} setNode={setNode} setNodes={setNodes} /></Panel>}

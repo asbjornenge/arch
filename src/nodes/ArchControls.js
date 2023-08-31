@@ -1,7 +1,9 @@
 import {
   Controls,
-  ControlButton
+  ControlButton,
+  useReactFlow
 } from 'reactflow'
+import { uid } from 'uid'
 import styled from 'styled-components'
 import { create } from 'zustand'
 import { FiArrowUpRight } from 'react-icons/fi'
@@ -12,11 +14,25 @@ export const controlState = create((set) => ({
   toggleAddingEdge: () => set((state) => ({ adding: !state.adding }))
 }))
 
-export default function ArchControls() {
+export default function ArchControls({ setNodes }) {
+  // TODO: Sett adding mode while holding down ctrl ??
   const { adding, toggleAddingEdge } = controlState()
+  const { project } = useReactFlow()
 
   const edgeAddingStyle = {}
   if (adding) edgeAddingStyle.backgroundColor = 'var(--color-bg-dark-grey)' 
+
+  const handleAddNode = () => {
+    const id = uid(8)
+    const newNode = {
+      id,
+      // we are removing the half of the node width (75) to center the new node
+      position: project({ x: 0, y: 0 }),
+      data: { label: id },
+      type: 'arch'
+    }
+    setNodes((nds) => nds.concat(newNode))
+  }
 
   return (
     <Controls>
@@ -25,7 +41,7 @@ export default function ArchControls() {
           <FiArrowUpRight />
         </ControlIconContainer>
       </ControlButton>
-      <ControlButton onClick={() => console.log('action')} title="action">
+      <ControlButton onClick={handleAddNode} title="action">
         <ControlIconContainer>
           <AiOutlineAppstoreAdd />
         </ControlIconContainer>
