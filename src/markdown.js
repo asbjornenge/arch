@@ -7,8 +7,8 @@ import "easymde/dist/easymde.min.css"
 const TOOLBAR_HEIGHT = 68
 const FOOTER_HEIGHT = 29
 
-export default function MarkdownEditor({ height }) {
-  const [markdown, setMarkdown] = useState('# Hello')
+export default function MarkdownEditor({ height, data }) {
+  const [markdown, setMarkdown] = useState(data?.nodes)
   const editorHeight = height - TOOLBAR_HEIGHT - FOOTER_HEIGHT
 
   const options = {

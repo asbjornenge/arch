@@ -15,8 +15,8 @@ const getSize = () => {
 }
 
 export default function Arch() {
-  // eslint-disable-next-line
   const [file, setFile] = useState(null)
+  const [data, setData] = useState(null)
   const [panning, setPanning] = useState('both')
   const [size, setSize] = useState(getSize())
 
@@ -36,6 +36,28 @@ export default function Arch() {
     return () => window.removeEventListener('resize', handleResize);
   }, [handleResize])
 
+  const handleOpenFile = async () => {
+    const dialogConfig = {
+      title: 'Select a file',
+      buttonLabel: 'This one will do',
+      properties: ['openFile'],
+      filters: [
+        { name: 'Arch file', extensions: ['arch'] },
+      ]
+    }
+    const res = await window.electron.openDialog('showOpenDialog', dialogConfig)
+    setFile(res.file)
+    setData(JSON.parse(res.content))
+  }
+
+  const handleSaveFile = async () => {
+    const dialogConfig = {
+    
+    }
+    const res = await window.electron.openDialog('showSaveDialog', dialogConfig)
+    console.log(res)
+  }
+
   let markdownWidth = size.width / 3
   if (markdownWidth < 440) markdownWidth = 440 // Smallest possible to avoid menu wrapping
   let diagramWidth = size.width - markdownWidth
@@ -46,7 +68,12 @@ export default function Arch() {
   return (
     <Wrapper>
       <Top>
-        <div><Logo src={archLogoSvg} /></div>
+        <TopLeft>
+          <Logo src={archLogoSvg} />
+          <div onClick={handleOpenFile}>Open</div>
+          <div onClick={handleSaveFile}>Save</div>
+          <div>{file}</div>
+        </TopLeft>
         <PanSelector>
           <Pan selected={panning === 'notes'} onClick={() => setPanning('notes')}>Notes</Pan>
           <Pan selected={panning === 'both'} onClick={() => setPanning('both')}>Both</Pan>
@@ -56,9 +83,9 @@ export default function Arch() {
       </Top>
       <Workspace>
         <MarkdownSpace width={markdownWidth} height={workspaceHeight} hidden={['both', 'notes'].indexOf(panning) < 0}>
-          <MarkdownEditor height={workspaceHeight} />
+          <MarkdownEditor height={workspaceHeight} data={data} />
         </MarkdownSpace>
-        <DiagramSpace width={diagramWidth} height={workspaceHeight} hidden={['both', 'diagram'].indexOf(panning) < 0}>
+        <DiagramSpace data={data} width={diagramWidth} height={workspaceHeight} hidden={['both', 'diagram'].indexOf(panning) < 0}>
           <DiagramEditor offsetY={TOP_HEIGHT} offsetX={size.width - diagramWidth} />
         </DiagramSpace>
       </Workspace>
@@ -78,6 +105,10 @@ const Top = styled.div`
   padding: 5px;
   border-bottom: 1px solid var(--color-border-grey);
   height: ${TOP_HEIGHT}px;
+`
+
+const TopLeft = styled.div`
+  display: flex;
 `
 
 const Logo = styled.img`
