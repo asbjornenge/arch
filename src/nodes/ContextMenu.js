@@ -11,6 +11,7 @@ export default function ContextMenu({ id, top, left, right, bottom, setNode, ...
       y: node.position.y + 50,
     };
 
+    // TODO, use uid(8) instead of copy !?
     addNodes({ ...node, id: `${node.id}-copy`, position });
   }, [id, getNode, addNodes]);
 

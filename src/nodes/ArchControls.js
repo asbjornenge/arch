@@ -1,3 +1,4 @@
+import {  useEffect } from 'react'
 import {
   Controls,
   ControlButton,
@@ -11,13 +12,35 @@ import { AiOutlineAppstoreAdd } from 'react-icons/ai'
 
 export const controlState = create((set) => ({
   adding: false,
-  toggleAddingEdge: () => set((state) => ({ adding: !state.adding }))
+  toggleAddingEdge: () => set((state) => ({ adding: !state.adding })),
+  setAddingEdge: (val) => set((state) => ({ adding: val }))
 }))
 
 export default function ArchControls({ setNodes }) {
   // TODO: Sett adding mode while holding down ctrl ??
-  const { adding, toggleAddingEdge } = controlState()
+  const { adding, toggleAddingEdge, setAddingEdge } = controlState()
   const { project } = useReactFlow()
+
+  useEffect(() => {
+    function downHandler({key}) {
+      if (key === 'Control') {
+        setAddingEdge(true)
+      }
+    }
+
+    function upHandler({key}) {
+      if (key === 'Control') {
+        setAddingEdge(false)
+      }
+    }
+    window.addEventListener('keydown', downHandler)
+    window.addEventListener('keyup', upHandler)
+    return () => {
+      window.removeEventListener('keydown', downHandler)
+      window.removeEventListener('keyup', upHandler)
+    };
+  }, [setAddingEdge])
+
 
   const edgeAddingStyle = {}
   if (adding) edgeAddingStyle.backgroundColor = 'var(--color-bg-dark-grey)' 

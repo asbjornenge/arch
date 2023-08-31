@@ -19,11 +19,7 @@ import 'reactflow/dist/style.css'
 const EDGE_STROKE_WIDTH = 2
 const EDGE_COLOR = 'black'
 
-const initialNodes = [
-  { id: '1', type: 'arch', position: { x: 0, y: 0 }, data: { label: '1' } },
-  { id: '2', type: 'arch', position: { x: 300, y: 300 }, data: { label: '2' } }
-]
-
+const initialNodes = []
 const initialEdges = []
 
 const nodeTypes = {
