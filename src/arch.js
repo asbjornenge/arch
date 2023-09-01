@@ -1,4 +1,5 @@
 import { useState, useCallback, useEffect } from 'react'
+import { ReactFlowProvider } from 'reactflow'
 import styled from 'styled-components'
 import MarkdownEditor from './markdown.js'
 import DiagramEditor from './diagram.js'
@@ -16,9 +17,11 @@ const getSize = () => {
 
 export default function Arch() {
   const [file, setFile] = useState(null)
-  const [data, setData] = useState(null)
   const [panning, setPanning] = useState('both')
   const [size, setSize] = useState(getSize())
+  const [flow, setFlow] = useState(null)
+  const [markdown, setMarkdown] = useState('')
+  const [rfInstance, setRfInstance] = useState(null)
 
   const handleResize = useCallback(() => {
     let ticking = false;
@@ -47,15 +50,24 @@ export default function Arch() {
     }
     const res = await window.electron.openDialog('showOpenDialog', dialogConfig)
     setFile(res.file)
-    setData(JSON.parse(res.content))
+    const content = JSON.parse(res.content)
+    console.log(content)
+    setMarkdown(content.notes)
+    setFlow(content.diagram)
   }
 
   const handleSaveFile = async () => {
+    // How to fetch Markdown and Diagram?
     const dialogConfig = {
-    
+      defaultPath: file || '',
+      payload: JSON.stringify({
+        notes: markdown,
+        diagram: rfInstance.toObject()
+      })
     }
     const res = await window.electron.openDialog('showSaveDialog', dialogConfig)
     console.log(res)
+    setFile(res.file)
   }
 
   let markdownWidth = size.width / 3
@@ -83,10 +95,12 @@ export default function Arch() {
       </Top>
       <Workspace>
         <MarkdownSpace width={markdownWidth} height={workspaceHeight} hidden={['both', 'notes'].indexOf(panning) < 0}>
-          <MarkdownEditor height={workspaceHeight} data={data} />
+          <MarkdownEditor height={workspaceHeight} markdown={markdown} setMarkdown={setMarkdown} />
         </MarkdownSpace>
-        <DiagramSpace data={data} width={diagramWidth} height={workspaceHeight} hidden={['both', 'diagram'].indexOf(panning) < 0}>
-          <DiagramEditor offsetY={TOP_HEIGHT} offsetX={size.width - diagramWidth} />
+        <DiagramSpace width={diagramWidth} height={workspaceHeight} hidden={['both', 'diagram'].indexOf(panning) < 0}>
+          <ReactFlowProvider>
+            <DiagramEditor flow={flow} setRfInstance={setRfInstance} offsetY={TOP_HEIGHT} offsetX={size.width - diagramWidth} />
+          </ReactFlowProvider>
         </DiagramSpace>
       </Workspace>
     </Wrapper>

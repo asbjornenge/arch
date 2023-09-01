@@ -1,12 +1,13 @@
-import { useState, useRef, useCallback } from 'react'
+import { useState, useRef, useEffect, useCallback } from 'react'
 import ReactFlow, {
   Panel,
+  addEdge,
   MiniMap,
   Background,
   MarkerType,
+  useReactFlow,
   useNodesState,
   useEdgesState,
-  addEdge,
 } from 'reactflow'
 import NodeEditor from './nodes/NodeEditor' 
 import ContextMenu from './nodes/ContextMenu' 
@@ -18,9 +19,6 @@ import 'reactflow/dist/style.css'
 
 const EDGE_STROKE_WIDTH = 2
 const EDGE_COLOR = 'black'
-
-const initialNodes = []
-const initialEdges = []
 
 const nodeTypes = {
   arch : ArchNode
@@ -44,15 +42,25 @@ const defaultEdgeOptions = {
   },
 }
 
-export default function DiagramEditor({ offsetY, offsetX }) {
+export default function DiagramEditor({ offsetY, offsetX, setRfInstance, flow }) {
   // eslint-disable-next-line
-  const [nodes, setNodes, onNodesChange] = useNodesState(initialNodes)
-  const [edges, setEdges, onEdgesChange] = useEdgesState(initialEdges)
+  const [nodes, setNodes, onNodesChange] = useNodesState([])
+  const [edges, setEdges, onEdgesChange] = useEdgesState([])
   const [node, setNode] = useState(null)
   const [menu, setMenu] = useState(null)
   const ref = useRef(null)
+  const { setViewport } = useReactFlow()
 
   const onConnect = useCallback((params) => setEdges((eds) => addEdge(params, eds)), [setEdges])
+
+  useEffect(() => {
+    if (!flow) return
+    console.log('new flow')
+    const { x = 0, y = 0, zoom = 1 } = flow.viewport
+    setNodes(flow.nodes || [])
+    setEdges(flow.edges || [])
+    setViewport({ x, y, zoom })
+  }, [flow])
 
   const onNodeContextMenu = (event, node) => {
     event.preventDefault();
@@ -78,6 +86,7 @@ export default function DiagramEditor({ offsetY, offsetX }) {
       ref={ref}
       nodes={nodes}
       edges={edges}
+      onInit={setRfInstance}
       nodeTypes={nodeTypes}
       edgeTypes={edgeTypes}
       onConnect={onConnect}

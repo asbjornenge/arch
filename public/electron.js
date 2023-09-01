@@ -8,8 +8,10 @@ function createWindow() {
     height: 600,
     webPreferences: {
       preload: path.join(__dirname, 'preload.js')
-    }
+    },
+    autoHideMenuBar: true
   })
+//  win.removeMenu()
 
  const appURL = app.isPackaged
   ? url.format({
@@ -33,7 +35,6 @@ app.whenReady().then(() => {
     const res = await dialog[method](params)
     if (!res) return
     if (res.canceled) return
-    console.log(method, res)
     // Open
     if (method === 'showOpenDialog') {
       const file = res?.filePaths[0]
@@ -54,7 +55,17 @@ app.whenReady().then(() => {
     if (method === 'showSaveDialog') {
       const file = res?.filePath
       if (!file) return
-      console.log(params)
+      const write = () => new Promise((resolve, reject) => {
+        fs.writeFile(file, params.payload, function (err) {
+          if (err) return reject(err)
+          resolve()
+        })
+      })
+      await write()
+      return {
+        file: file,
+        content: params.payload
+      }
     }
   })
 })
