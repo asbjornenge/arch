@@ -51,7 +51,6 @@ export default function Arch() {
     const res = await window.electron.openDialog('showOpenDialog', dialogConfig)
     setFile(res.file)
     const content = JSON.parse(res.content)
-    console.log(content)
     setMarkdown(content.notes)
     setFlow(content.diagram)
   }
@@ -66,7 +65,6 @@ export default function Arch() {
       })
     }
     const res = await window.electron.openDialog('showSaveDialog', dialogConfig)
-    console.log(res)
     setFile(res.file)
   }
 

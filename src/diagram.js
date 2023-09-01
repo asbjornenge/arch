@@ -60,7 +60,7 @@ export default function DiagramEditor({ offsetY, offsetX, setRfInstance, flow })
     setNodes(flow.nodes || [])
     setEdges(flow.edges || [])
     setViewport({ x, y, zoom })
-  }, [flow])
+  }, [flow, setNodes, setEdges, setViewport])
 
   const onNodeContextMenu = (event, node) => {
     event.preventDefault();
