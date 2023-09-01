@@ -1,6 +1,6 @@
 const path = require('path')
 const fs = require('fs')
-const { app, BrowserWindow, ipcMain, dialog } = require('electron')
+const { app, shell, BrowserWindow, ipcMain, dialog } = require('electron')
 
 function createWindow() {
   const win = new BrowserWindow({
@@ -31,7 +31,7 @@ app.whenReady().then(() => {
       createWindow()
     }
   })
-  ipcMain.handle('dialog', async (event, method, params) => {       
+  ipcMain.handle('dialog', async (event, method, params) => { 
     const res = await dialog[method](params)
     if (!res) return
     if (res.canceled) return
@@ -68,6 +68,10 @@ app.whenReady().then(() => {
       }
     }
   })
+  ipcMain.handle('link', async (event, url) => {
+    console.log(url)
+    shell.openExternal(url)
+  }) 
 })
 
 app.on('window-all-closed', () => {

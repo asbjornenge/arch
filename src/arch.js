@@ -1,7 +1,11 @@
 import { useState, useCallback, useEffect } from 'react'
 import { ReactFlowProvider } from 'reactflow'
 import styled from 'styled-components'
-import { AiOutlineFolderOpen, AiOutlineSave } from 'react-icons/ai'
+import { 
+  AiOutlineFolderOpen, 
+  AiOutlineSave, 
+  AiOutlineGithub 
+} from 'react-icons/ai'
 import MarkdownEditor from './markdown.js'
 import DiagramEditor from './diagram.js'
 import archLogoSvg from './graphics/logo.svg'
@@ -72,6 +76,10 @@ export default function Arch() {
     setFile(res.file)
   }
 
+  const handleExternalLink = async (url) => {
+    await window.electron.openExternalLink(url)
+  }
+
   let markdownWidth = size.width / 3
   if (markdownWidth < 440) markdownWidth = 440 // Smallest possible to avoid menu wrapping
   let diagramWidth = size.width - markdownWidth
@@ -100,7 +108,11 @@ export default function Arch() {
             <Pan selected={panning === 'both'} onClick={() => setPanning('both')}>Both</Pan>
             <Pan selected={panning === 'diagram'} onClick={() => setPanning('diagram')}>Diagram</Pan>
           </PanSelector>
-          <TopRight>links</TopRight>
+          <TopRight>
+            <SVGIconContainerButton onClick={() => handleExternalLink('https://github.com/asbjornenge/arch')}>
+              <AiOutlineGithub />
+            </SVGIconContainerButton>
+          </TopRight>
         </TopUpper>
       </Top>
       <Workspace>

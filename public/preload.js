@@ -5,5 +5,6 @@
 const { contextBridge, ipcRenderer } = require('electron')
 
 contextBridge.exposeInMainWorld('electron', {
-  openDialog: (method, config) => ipcRenderer.invoke('dialog', method, config)
+  openDialog: (method, config) => ipcRenderer.invoke('dialog', method, config),
+  openExternalLink: (url) => ipcRenderer.invoke('link', url)
 })
