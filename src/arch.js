@@ -1,12 +1,14 @@
 import { useState, useCallback, useEffect } from 'react'
 import { ReactFlowProvider } from 'reactflow'
 import styled from 'styled-components'
+import { AiOutlineFolderOpen } from 'react-icons/ai'
 import MarkdownEditor from './markdown.js'
 import DiagramEditor from './diagram.js'
 import archLogoSvg from './graphics/logo.svg'
+import { SVGIconContainer } from './components/SVGIconContainer'
 
-const TOP_HEIGHT = 30
-const WORKSPACE_HEIGHT_MARGIN = 12
+const TOP_HEIGHT = 45
+const WORKSPACE_HEIGHT_MARGIN = 2
 
 const getSize = () => {
   return { 
@@ -74,22 +76,28 @@ export default function Arch() {
   const workspaceHeight = size.height - TOP_HEIGHT - WORKSPACE_HEIGHT_MARGIN
   if (panning === 'notes') markdownWidth = size.width
   if (panning === 'diagram') diagramWidth = size.width
+  let fileName = ''
+  if (file) fileName = file.split('/')[file.split('/').length-1]
 
   return (
     <Wrapper>
       <Top>
-        <TopLeft>
-          <Logo src={archLogoSvg} />
-          <div onClick={handleOpenFile}>Open</div>
-          <div onClick={handleSaveFile}>Save</div>
-          <div>{file}</div>
-        </TopLeft>
-        <PanSelector>
-          <Pan selected={panning === 'notes'} onClick={() => setPanning('notes')}>Notes</Pan>
-          <Pan selected={panning === 'both'} onClick={() => setPanning('both')}>Both</Pan>
-          <Pan selected={panning === 'diagram'} onClick={() => setPanning('diagram')}>Diagram</Pan>
-        </PanSelector>
-        <div>links</div>
+        <TopUpper>
+          <TopLeft>
+            <Logo src={archLogoSvg} />
+            <SVGIconContainer onClick={handleOpenFile} size={20}>
+              <AiOutlineFolderOpen />
+            </SVGIconContainer>
+            <div onClick={handleSaveFile}>Save</div>
+            <FileName>{fileName}</FileName>
+          </TopLeft>
+          <PanSelector>
+            <Pan selected={panning === 'notes'} onClick={() => setPanning('notes')}>Notes</Pan>
+            <Pan selected={panning === 'both'} onClick={() => setPanning('both')}>Both</Pan>
+            <Pan selected={panning === 'diagram'} onClick={() => setPanning('diagram')}>Diagram</Pan>
+          </PanSelector>
+          <TopRight>links</TopRight>
+        </TopUpper>
       </Top>
       <Workspace>
         <MarkdownSpace width={markdownWidth} height={workspaceHeight} hidden={['both', 'notes'].indexOf(panning) < 0}>
@@ -112,15 +120,34 @@ const Wrapper = styled.div`
 
 const Top = styled.div`
   display: flex;
-  justify-content: space-between;
-  align-items: center;
-  padding: 5px;
+  flex-direction: column;
   border-bottom: 1px solid var(--color-border-grey);
   height: ${TOP_HEIGHT}px;
+`
+const TopUpper = styled.div`
+  padding: 10px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
 `
 
 const TopLeft = styled.div`
   display: flex;
+  align-items: center;
+  justify-content: flex-start;
+  gap: 5px;
+  width: 200px;
+`
+
+const TopRight = styled.div`
+  width: 200px;
+  display: flex;
+  justify-content: flex-end;
+`
+
+const FileName = styled.div`
+  font-size: 0.7em;
+  margin-top: 4px;
 `
 
 const Logo = styled.img`

@@ -5,10 +5,10 @@ import {
   useReactFlow
 } from 'reactflow'
 import { uid } from 'uid'
-import styled from 'styled-components'
 import { create } from 'zustand'
 import { FiArrowUpRight } from 'react-icons/fi'
 import { AiOutlineAppstoreAdd } from 'react-icons/ai'
+import { SVGIconContainer } from '../components/SVGIconContainer'
 
 export const controlState = create((set) => ({
   adding: false,
@@ -60,31 +60,15 @@ export default function ArchControls({ setNodes }) {
   return (
     <Controls>
       <ControlButton style={edgeAddingStyle} onClick={toggleAddingEdge} title="another action">
-        <ControlIconContainer>
+        <SVGIconContainer iconsize={15}>
           <FiArrowUpRight />
-        </ControlIconContainer>
+        </SVGIconContainer>
       </ControlButton>
       <ControlButton onClick={handleAddNode} title="action">
-        <ControlIconContainer>
+        <SVGIconContainer iconsize={15}>
           <AiOutlineAppstoreAdd />
-        </ControlIconContainer>
+        </SVGIconContainer>
       </ControlButton>
     </Controls>
   );
 }
-
-const ControlIconContainer = styled.div`
-  width: 20px;
-  height: 20px;
-  flex-shrink: 0;
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  & svg {
-    width: 15px;
-    height: 15px;
-    max-width: 20px;
-    max-height: 20px;
-    display: flex;
-  }
-`
