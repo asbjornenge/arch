@@ -55,7 +55,6 @@ export default function DiagramEditor({ offsetY, offsetX, setRfInstance, flow })
 
   useEffect(() => {
     if (!flow) return
-    console.log('new flow')
     const { x = 0, y = 0, zoom = 1 } = flow.viewport
     setNodes(flow.nodes || [])
     setEdges(flow.edges || [])
