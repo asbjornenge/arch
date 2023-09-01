@@ -69,7 +69,6 @@ app.whenReady().then(() => {
     }
   })
   ipcMain.handle('link', async (event, url) => {
-    console.log(url)
     shell.openExternal(url)
   }) 
 })
