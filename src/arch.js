@@ -1,11 +1,11 @@
 import { useState, useCallback, useEffect } from 'react'
 import { ReactFlowProvider } from 'reactflow'
 import styled from 'styled-components'
-import { AiOutlineFolderOpen } from 'react-icons/ai'
+import { AiOutlineFolderOpen, AiOutlineSave } from 'react-icons/ai'
 import MarkdownEditor from './markdown.js'
 import DiagramEditor from './diagram.js'
 import archLogoSvg from './graphics/logo.svg'
-import { SVGIconContainer } from './components/SVGIconContainer'
+import { SVGIconContainerButton } from './components/SVGIconContainer'
 
 const TOP_HEIGHT = 45
 const WORKSPACE_HEIGHT_MARGIN = 2
@@ -51,6 +51,7 @@ export default function Arch() {
       ]
     }
     const res = await window.electron.openDialog('showOpenDialog', dialogConfig)
+    if (!res) return
     setFile(res.file)
     const content = JSON.parse(res.content)
     setMarkdown(content.notes)
@@ -67,6 +68,7 @@ export default function Arch() {
       })
     }
     const res = await window.electron.openDialog('showSaveDialog', dialogConfig)
+    if (!res) return
     setFile(res.file)
   }
 
@@ -85,10 +87,12 @@ export default function Arch() {
         <TopUpper>
           <TopLeft>
             <Logo src={archLogoSvg} />
-            <SVGIconContainer onClick={handleOpenFile} size={20}>
+            <SVGIconContainerButton onClick={handleOpenFile} size={20}>
               <AiOutlineFolderOpen />
-            </SVGIconContainer>
-            <div onClick={handleSaveFile}>Save</div>
+            </SVGIconContainerButton>
+            <SVGIconContainerButton onClick={handleSaveFile} iconsize={17}>
+              <AiOutlineSave />
+            </SVGIconContainerButton>
             <FileName>{fileName}</FileName>
           </TopLeft>
           <PanSelector>

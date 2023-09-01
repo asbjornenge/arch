@@ -18,3 +18,7 @@ export const SVGIconContainer = styled.div`
     display: flex;
   }
 `
+
+export const SVGIconContainerButton = styled(SVGIconContainer)`
+  cursor: pointer;
+`
