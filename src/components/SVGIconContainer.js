@@ -10,6 +10,7 @@ export const SVGIconContainer = styled.div`
   display: flex;
   justify-content: center;
   align-items: center;
+  opacity: ${props => props.disabled ? 0.3 : 1};
   & svg {
     width: ${props => props.iconsize || DEFAULT_ICON_SIZE}px;
     height: ${props => props.iconsize || DEFAULT_ICON_SIZE}px;

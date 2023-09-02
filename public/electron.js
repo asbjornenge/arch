@@ -35,7 +35,7 @@ app.whenReady().then(() => {
     const res = await dialog[method](params)
     if (!res) return
     if (res.canceled) return
-    // Open
+    // Open dialogue
     if (method === 'showOpenDialog') {
       const file = res?.filePaths[0]
       if (!file) return
@@ -51,7 +51,7 @@ app.whenReady().then(() => {
         content: content
       }
     }
-    // Save
+    // Save dialogue
     if (method === 'showSaveDialog') {
       const file = res?.filePath
       if (!file) return
@@ -70,6 +70,16 @@ app.whenReady().then(() => {
   })
   ipcMain.handle('link', async (event, url) => {
     shell.openExternal(url)
+  }) 
+  ipcMain.handle('save', async (event, file, content) => {
+    const write = () => new Promise((resolve, reject) => {
+      fs.writeFile(file, content, function (err) {
+        if (err) return reject(err)
+        resolve()
+      })
+    })
+    await write()
+    return true
   }) 
 })
 

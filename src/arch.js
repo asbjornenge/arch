@@ -63,17 +63,13 @@ export default function Arch() {
   }
 
   const handleSaveFile = async () => {
-    // How to fetch Markdown and Diagram?
-    const dialogConfig = {
-      defaultPath: file || '',
-      payload: JSON.stringify({
-        notes: markdown,
-        diagram: rfInstance.toObject()
-      })
-    }
-    const res = await window.electron.openDialog('showSaveDialog', dialogConfig)
-    if (!res) return
-    setFile(res.file)
+    if (!file) return
+    const content = JSON.stringify({
+      notes: markdown,
+      diagram: rfInstance.toObject()
+    })
+    const res = await window.electron.saveFile(file, content)
+    console.log(res)
   }
 
   const handleExternalLink = async (url) => {
@@ -98,7 +94,7 @@ export default function Arch() {
             <SVGIconContainerButton onClick={handleOpenFile} size={20}>
               <AiOutlineFolderOpen />
             </SVGIconContainerButton>
-            <SVGIconContainerButton onClick={handleSaveFile} iconsize={17}>
+            <SVGIconContainerButton onClick={handleSaveFile} iconsize={17} disabled={!file}>
               <AiOutlineSave />
             </SVGIconContainerButton>
             <FileName>{fileName}</FileName>
