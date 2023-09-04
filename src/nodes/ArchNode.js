@@ -4,7 +4,7 @@ import {
   useStore,
   NodeResizeControl 
 } from 'reactflow'
-import { controlState } from './ArchControls'
+import { controlState } from '../state'
 import './ArchNode.css'
 
 const connectionNodeIdSelector = (state) => state.connectionNodeId;

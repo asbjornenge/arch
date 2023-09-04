@@ -5,16 +5,10 @@ import {
   useReactFlow
 } from 'reactflow'
 import { uid } from 'uid'
-import { create } from 'zustand'
 import { FiArrowUpRight } from 'react-icons/fi'
 import { AiOutlineAppstoreAdd } from 'react-icons/ai'
 import { SVGIconContainer } from '../components/SVGIconContainer'
-
-export const controlState = create((set) => ({
-  adding: false,
-  toggleAddingEdge: () => set((state) => ({ adding: !state.adding })),
-  setAddingEdge: (val) => set((state) => ({ adding: val }))
-}))
+import { controlState } from '../state'
 
 export default function ArchControls({ setNodes }) {
   // TODO: Sett adding mode while holding down ctrl ??

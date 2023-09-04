@@ -6,6 +6,7 @@
   border: 1px solid var(--color-border-grey);
   border-radius: 5px;
   background-color: white;
+  gap: 2px;
 }
 
 .NodeEditor .buttons {
@@ -21,4 +22,8 @@
   border: 1px solid var(--color-border-grey);
   padding: 5px 0px;
   text-indent: 5px;
+}
+
+.NodeEditor input.error {
+  color: red;
 }

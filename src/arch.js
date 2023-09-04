@@ -11,6 +11,7 @@ import MarkdownEditor from './markdown.js'
 import DiagramEditor from './diagram.js'
 import archLogoSvg from './graphics/logo.svg'
 import { SVGIconContainerButton } from './components/SVGIconContainer'
+import { fileState } from './state'
 
 const TOP_HEIGHT = 45
 const WORKSPACE_HEIGHT_MARGIN = 2
@@ -23,7 +24,7 @@ const getSize = () => {
 }
 
 export default function Arch() {
-  const [file, setFile] = useState(null)
+  const { file, setFile } = fileState() 
   const [panning, setPanning] = useState('both')
   const [size, setSize] = useState(getSize())
   const [flow, setFlow] = useState(null)

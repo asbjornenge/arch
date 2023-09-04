@@ -81,6 +81,21 @@ app.whenReady().then(() => {
     await write()
     return true
   }) 
+  ipcMain.handle('exists', async (event, path) => {
+    const exists = () => new Promise((resolve, reject) => {
+      fs.access(path, fs.F_OK, (err) => {
+        if (err) reject(false)
+        resolve(true)
+      })
+    })
+    let pathExists = false
+    try {
+      pathExists = await exists()
+    } catch(e) {
+      pathExists = false
+    }
+    return pathExists
+  })
 })
 
 app.on('window-all-closed', () => {
