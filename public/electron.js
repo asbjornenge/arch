@@ -96,6 +96,31 @@ app.whenReady().then(() => {
     }
     return pathExists
   })
+  ipcMain.handle('touch', async (event, filepath) => {
+    const touch = () => new Promise((resolve, reject) => {
+      fs.mkdir(path.dirname(filepath), { recursive: true}, function (err) {
+        if (err) return reject(err)
+        const time = new Date();
+        fs.utimes(filepath, time, time, (err) => {
+          if ('ENOENT' !== err.code) {
+            return reject(err)
+          }
+          let fd = fs.open(filepath, 'a', (err, fd) => {
+            if (err) return reject(err)
+            fs.close(fd)
+            return resolve(true)
+          })
+        })
+      })
+    })
+    let pathExists = false
+    try {
+      pathExists = await touch()
+    } catch(e) {
+      pathExists = false
+    }
+    return pathExists
+  })
 })
 
 app.on('window-all-closed', () => {

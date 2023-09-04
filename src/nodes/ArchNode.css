@@ -13,6 +13,16 @@
   background-color: white;
 }
 
+.ArchNode .fileIndicator {
+  position: absolute;
+  top: 5px;
+  right: 5px;
+  cursor: pointer;
+}
+.ArchNode .fileIndicator.missing {
+  color: red;
+}
+
 div.ArchHandle {
   width: 100%;
   height: 100%;

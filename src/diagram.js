@@ -115,7 +115,7 @@ export default function DiagramEditor({ offsetY, offsetX, setRfInstance, flow, o
       <ArchControls setNodes={setNodes} />
       <Background />
       {menu && <ContextMenu onClick={onPaneClick} {...menu} setNode={setNode} />}
-      {node && <Panel position="top-right"><NodeEditor key={node?.id} node={node} setNode={setNode} setNodes={setNodes} /></Panel>}
+      {node && <Panel position="top-right"><NodeEditor key={node?.id} node={node} setNode={setNode} setNodes={setNodes} onChange={onChange} /></Panel>}
     </ReactFlow>
   )
 }

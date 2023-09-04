@@ -4,7 +4,9 @@ import {
   useStore,
   NodeResizeControl 
 } from 'reactflow'
+import { AiOutlineFileText } from 'react-icons/ai'
 import { controlState } from '../state'
+import { SVGIconContainer } from '../components/SVGIconContainer'
 import './ArchNode.css'
 
 const connectionNodeIdSelector = (state) => state.connectionNodeId;
@@ -29,10 +31,15 @@ export default function CustomNode({ id, data, selected }) {
 
   return (
     <div className="ArchNode" style={nodeStyle}>
+      { data?.file &&
+        <SVGIconContainer className={`fileIndicator ${!!!data?.fileExists ? 'missing' : ''}`} size={15}>
+          <AiOutlineFileText />
+        </SVGIconContainer>
+      }
       { selected &&
-      <NodeResizeControl style={resizeControlStyle} isVisible={selected} minWidth={100} minHeight={50}>
-        <ResizeIcon />
-      </NodeResizeControl>
+        <NodeResizeControl style={resizeControlStyle} isVisible={selected} minWidth={100} minHeight={50}>
+          <ResizeIcon />
+        </NodeResizeControl>
       }
       <Handle
         className="ArchHandle"
