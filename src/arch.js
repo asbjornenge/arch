@@ -1,6 +1,7 @@
 import { useState, useCallback, useEffect } from 'react'
 import { ReactFlowProvider } from 'reactflow'
 import styled from 'styled-components'
+import ohash from 'object-hash'
 import { 
   AiOutlineFolderOpen, 
   AiOutlineSave, 
@@ -28,6 +29,8 @@ export default function Arch() {
   const [flow, setFlow] = useState(null)
   const [markdown, setMarkdown] = useState('')
   const [rfInstance, setRfInstance] = useState(null)
+  const [fileHash, setFileHash] = useState('')
+  const [archHash, setArchHash] = useState('')
 
   const handleResize = useCallback(() => {
     let ticking = false;
@@ -45,6 +48,13 @@ export default function Arch() {
     return () => window.removeEventListener('resize', handleResize);
   }, [handleResize])
 
+  const getContent = () => {
+    return {
+      notes: markdown,
+      diagram: rfInstance ? rfInstance.toObject() : {}
+    }
+  }
+
   const handleOpenFile = async () => {
     const dialogConfig = {
       title: 'Select a file',
@@ -60,20 +70,39 @@ export default function Arch() {
     const content = JSON.parse(res.content)
     setMarkdown(content.notes)
     setFlow(content.diagram)
+    setFileHash(ohash(content))
+    setArchHash(ohash(content))
   }
 
   const handleSaveFile = async () => {
-    if (!file) return
-    const content = JSON.stringify({
-      notes: markdown,
-      diagram: rfInstance.toObject()
-    })
-    const res = await window.electron.saveFile(file, content)
-    console.log(res)
+    if (!file) return await handleSaveFileDialog()
+    const content = getContent()
+    await window.electron.saveFile(file, JSON.stringify(content))
+    setFileHash(ohash(content))
   }
+
+  const handleSaveFileDialog = async () => {
+    const content = getContent()
+    const dialogConfig = {
+      defaultPath: '',
+      payload: JSON.stringify(content)
+    }
+    const res = await window.electron.openDialog('showSaveDialog', dialogConfig)
+    if (!res) return
+    setFile(res.file)
+    setFileHash(ohash(content))
+  }
+
 
   const handleExternalLink = async (url) => {
     await window.electron.openExternalLink(url)
+  }
+
+  const handleChange = (prop, val) => {
+    const content = getContent()
+    if (prop === 'notes')
+      content[prop] = val
+    setArchHash(ohash(content))
   }
 
   let markdownWidth = size.width / 3
@@ -84,6 +113,7 @@ export default function Arch() {
   if (panning === 'diagram') diagramWidth = size.width
   let fileName = ''
   if (file) fileName = file.split('/')[file.split('/').length-1]
+  const hasDiff = archHash !== fileHash
 
   return (
     <Wrapper>
@@ -94,7 +124,7 @@ export default function Arch() {
             <SVGIconContainerButton onClick={handleOpenFile} size={20}>
               <AiOutlineFolderOpen />
             </SVGIconContainerButton>
-            <SVGIconContainerButton onClick={handleSaveFile} iconsize={17} disabled={!file}>
+            <SVGIconContainerButton onClick={handleSaveFile} iconsize={17} disabled={!hasDiff}>
               <AiOutlineSave />
             </SVGIconContainerButton>
             <FileName>{fileName}</FileName>
@@ -113,11 +143,11 @@ export default function Arch() {
       </Top>
       <Workspace>
         <MarkdownSpace width={markdownWidth} height={workspaceHeight} hidden={['both', 'notes'].indexOf(panning) < 0}>
-          <MarkdownEditor height={workspaceHeight} markdown={markdown} setMarkdown={setMarkdown} />
+          <MarkdownEditor height={workspaceHeight} markdown={markdown} setMarkdown={setMarkdown} onChange={handleChange} />
         </MarkdownSpace>
         <DiagramSpace width={diagramWidth} height={workspaceHeight} hidden={['both', 'diagram'].indexOf(panning) < 0}>
           <ReactFlowProvider>
-            <DiagramEditor flow={flow} setRfInstance={setRfInstance} offsetY={TOP_HEIGHT} offsetX={size.width - diagramWidth} />
+            <DiagramEditor flow={flow} setRfInstance={setRfInstance} offsetY={TOP_HEIGHT} offsetX={size.width - diagramWidth} onChange={handleChange} />
           </ReactFlowProvider>
         </DiagramSpace>
       </Workspace>

@@ -42,7 +42,7 @@ const defaultEdgeOptions = {
   },
 }
 
-export default function DiagramEditor({ offsetY, offsetX, setRfInstance, flow }) {
+export default function DiagramEditor({ offsetY, offsetX, setRfInstance, flow, onChange }) {
   // eslint-disable-next-line
   const [nodes, setNodes, onNodesChange] = useNodesState([])
   const [edges, setEdges, onEdgesChange] = useEdgesState([])
@@ -52,6 +52,20 @@ export default function DiagramEditor({ offsetY, offsetX, setRfInstance, flow })
   const { setViewport } = useReactFlow()
 
   const onConnect = useCallback((params) => setEdges((eds) => addEdge(params, eds)), [setEdges])
+  const handleNodesChange = (data) => {
+    onNodesChange(data)
+    clearTimeout(window.diagramChangeTimeout)
+    window.diagramChangeTimeout= setTimeout(() => {
+      onChange('diagram')
+    }, 1000)
+  }
+  const handleEdgesChange = (data, tata) => {
+    onEdgesChange(data)
+    clearTimeout(window.diagramChangeTimeout)
+    window.diagramChangeTimeout= setTimeout(() => {
+      onChange('diagram')
+    }, 1000)
+  }
 
   useEffect(() => {
     if (!flow) return
@@ -90,8 +104,8 @@ export default function DiagramEditor({ offsetY, offsetX, setRfInstance, flow })
       edgeTypes={edgeTypes}
       onConnect={onConnect}
       onPaneClick={onPaneClick}
-      onNodesChange={onNodesChange}
-      onEdgesChange={onEdgesChange}
+      onNodesChange={handleNodesChange}
+      onEdgesChange={handleEdgesChange}
       onNodeContextMenu={onNodeContextMenu}
       defaultEdgeOptions={defaultEdgeOptions}
       connectionLineStyle={connectionLineStyle}
