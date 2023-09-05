@@ -63,10 +63,10 @@ function ResizeIcon({ shape }) {
   let bottom = 5
   let right = 5
   console.log(shape)
-  if (shape == 'cylinder') {
+  if (shape === 'cylinder') {
     bottom = 15
   }
-  if (shape == 'circle') {
+  if (shape === 'circle') {
   }
 
   return (
