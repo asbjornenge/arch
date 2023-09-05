@@ -62,7 +62,6 @@ export default function CustomNode({ id, data, selected }) {
 function ResizeIcon({ shape }) {
   let bottom = 5
   let right = 5
-  console.log(shape)
   if (shape === 'cylinder') {
     bottom = 15
   }
