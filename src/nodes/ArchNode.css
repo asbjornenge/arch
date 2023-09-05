@@ -12,12 +12,32 @@
   font-weight: bold;
   background-color: white;
 }
+.ArchNode.circle {
+  border-radius: 50%;
+}
+.ArchNode.cylinder {
+  --r: 20px;
+  /* whatever values/units you want */
+  background: 
+    radial-gradient(50% var(--r) at 50% var(--r), var(--color-border-grey) 99.99%, #0000 0),
+    radial-gradient(50% var(--r) at 50% calc(100% - var(--r)), #fff3 99.99%, #0000 0),
+    white;
+  border-radius: 100% / calc(var(--r) * 2);
+}
 
 .ArchNode .fileIndicator {
   position: absolute;
   top: 5px;
   right: 5px;
   cursor: pointer;
+}
+.ArchNode.circle .fileIndicator {
+  top: 15%;
+  right: 15%;
+}
+.ArchNode.cylinder .fileIndicator {
+  top: 40px;
+  right: 5%;
 }
 .ArchNode .fileIndicator.missing {
   color: red;

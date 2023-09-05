@@ -14,6 +14,7 @@ export default function NodeEditor({ node, setNode, setNodes, onChange, ...props
   const { file: rootFile } = fileState()
   const [file, setFile] = useState(node?.data?.file || '')
   const [fileExists, setFileExists] = useState(true)
+  const [shape, setShape] = useState(node?.data?.shape || 'square')
 
   useEffect(() => {
     setNodes((nds) =>
@@ -22,6 +23,7 @@ export default function NodeEditor({ node, setNode, setNodes, onChange, ...props
           n.data = {
             ...n.data,
             label: label,
+            shape: shape,
             file: file,
             fileExists: fileExists
           }
@@ -29,14 +31,11 @@ export default function NodeEditor({ node, setNode, setNodes, onChange, ...props
         return n
       })
     )
-    clearTimeout(window.nodeChangeTimeout)
-    window.nodeChangeTimeout= setTimeout(() => {
-      onChange('node')
-    }, 1000)
-  }, [label, file, fileExists, node.id, setNodes, onChange])
+  }, [label, file, shape, fileExists, node.id, setNodes])
 
   useEffect(() => {
     const checkFileExistence = async () => {
+      if (!rootFile) return
       let path = rootFile.split('/')
       path.splice(-1)
       path.push(file)
@@ -48,6 +47,7 @@ export default function NodeEditor({ node, setNode, setNodes, onChange, ...props
   }, [file, rootFile, setFileExists])
 
   const handleTouchFile = async () => {
+    if (!rootFile) return
     let path = rootFile.split('/')
     path.splice(-1)
     path.push(file)
@@ -60,10 +60,14 @@ export default function NodeEditor({ node, setNode, setNodes, onChange, ...props
 
   const handleClose = () => { 
     setNode(null)
+    clearTimeout(window.nodeChangeTimeout)
+    window.nodeChangeTimeout= setTimeout(() => {
+      onChange('node')
+    }, 1000)
   }
 
   return (
-    <div className="NodeEditor">
+    <div className={`NodeEditor ${shape}`}>
       <label>label:</label>
       <input value={label} onChange={(evt) => setLabel(evt.target.value)} />
       <label>file:</label>
@@ -76,6 +80,11 @@ export default function NodeEditor({ node, setNode, setNodes, onChange, ...props
           <AiOutlineEdit onClick={handleEditFile}  style={{ cursor: 'pointer' }} />
         }
       </FileInputWrapper>
+      <ShapeSelector>
+        <Shape selected={shape === 'square'} onClick={() => setShape('square')}><Square /></Shape>
+        <Shape selected={shape === 'circle'} onClick={() => setShape('circle')}><Circle /></Shape>
+        <Shape selected={shape === 'cylinder'} onClick={() => setShape('cylinder')}><Cylinder /></Shape>
+      </ShapeSelector>
       <div className="buttons">
         <button className="archButton" onClick={handleClose}>Close</button>
       </div>
@@ -87,4 +96,52 @@ const FileInputWrapper = styled.div`
   display: flex;
   align-items: center;
   gap: 5px;
+`
+
+const ShapeSelector  = styled.div`
+  display: flex;
+  margin-top: 5px;
+  gap: 5px;
+`
+
+const Shape = styled.div`
+  width: 50px;
+  height: 50px;
+  border-radius: 5px;
+  cursor: pointer;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  ${props => props.selected ? 
+  'background-color: var(--color-bg-grey);' : ''
+  }
+`
+
+const Square = styled.div`
+  width: 35px;
+  height: 40px;
+  border: 1px solid black;
+  border-radius: 3px;
+  background-color: white;
+`
+
+const Circle = styled.div`
+  width: 40px;
+  height: 40px;
+  border: 1px solid black;
+  border-radius: 50%;
+  background-color: white;
+`
+
+const Cylinder = styled.div`
+  width: 30px;
+  height: 40px;
+  border: 1px solid black;
+  --r: 5px;
+  /* whatever values/units you want */
+  background: 
+    radial-gradient(50% var(--r) at 50% var(--r), var(--color-border-grey) 99.99%, #0000 0),
+    radial-gradient(50% var(--r) at 50% calc(100% - var(--r)), #fff3 99.99%, #0000 0),
+    white;
+  border-radius: 100% / calc(var(--r) * 2);
 `

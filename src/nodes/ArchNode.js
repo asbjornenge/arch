@@ -28,9 +28,10 @@ export default function CustomNode({ id, data, selected }) {
   if (isAddingEdge) sourceStyle.zIndex = 1
   if (isTarget) targetStyle.zIndex = 2
   if (isTarget) nodeStyle.borderStyle = 'dashed'
+  const shape = data?.shape || 'square'
 
   return (
-    <div className="ArchNode" style={nodeStyle}>
+    <div className={`ArchNode ${shape}`} style={nodeStyle}>
       { data?.file &&
         <SVGIconContainer className={`fileIndicator ${!!!data?.fileExists ? 'missing' : ''}`} size={15}>
           <AiOutlineFileText />
@@ -38,7 +39,7 @@ export default function CustomNode({ id, data, selected }) {
       }
       { selected &&
         <NodeResizeControl style={resizeControlStyle} isVisible={selected} minWidth={100} minHeight={50}>
-          <ResizeIcon />
+          <ResizeIcon shape={shape} />
         </NodeResizeControl>
       }
       <Handle
@@ -58,7 +59,16 @@ export default function CustomNode({ id, data, selected }) {
   );
 }
 
-function ResizeIcon() {
+function ResizeIcon({ shape }) {
+  let bottom = 5
+  let right = 5
+  console.log(shape)
+  if (shape == 'cylinder') {
+    bottom = 15
+  }
+  if (shape == 'circle') {
+  }
+
   return (
     <svg
       xmlns="http://www.w3.org/2000/svg"
@@ -70,7 +80,7 @@ function ResizeIcon() {
       fill="none"
       strokeLinecap="round"
       strokeLinejoin="round"
-      style={{ position: 'absolute', right: 5, bottom: 5 }}
+      style={{ position: 'absolute', right: right, bottom: bottom }}
     >
       <path stroke="none" d="M0 0h24v24H0z" fill="none" />
       <polyline points="16 20 20 20 20 16" />
