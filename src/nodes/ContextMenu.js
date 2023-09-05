@@ -3,8 +3,13 @@ import { uid } from 'uid'
 import { useReactFlow } from 'reactflow'
 import './ContextMenu.css'
 
-export default function ContextMenu({ id, top, left, right, bottom, setNode, ...props }) {
-  const { getNode, setNodes, addNodes, setEdges } = useReactFlow();
+export default function ContextMenu({ id, top, left, right, bottom, setNode, parentNode, ...props }) {
+  const { getNode, setNodes, addNodes, setEdges, getNodes } = useReactFlow();
+
+  const node = getNode(id)
+  const nodes = getNodes()
+  const children = nodes.filter(n => n.parentNode === id)
+
   const duplicateNode = useCallback(() => {
     const node = getNode(id);
     const position = {
@@ -16,8 +21,8 @@ export default function ContextMenu({ id, top, left, right, bottom, setNode, ...
   }, [id, getNode, addNodes]);
 
   const deleteNode = useCallback(() => {
-    setNodes((nodes) => nodes.filter((node) => node.id !== id));
-    setEdges((edges) => edges.filter((edge) => edge.source !== id));
+    setNodes((nodes) => nodes.filter((node) => node.id !== id))
+    setEdges((edges) => edges.filter((edge) => edge.source !== id))
   }, [id, setNodes, setEdges]);
 
   const editNode = useCallback(() => {
@@ -25,11 +30,28 @@ export default function ContextMenu({ id, top, left, right, bottom, setNode, ...
     setNode(node)
   }, [id, setNode, getNode])
 
+  const decoupleNode = useCallback(() => {
+    setNodes((nds) =>
+      nds.map(n => {
+        if (n.id === id) {
+          delete n.parentNode
+          delete n.extend
+        }
+        return n
+      })
+    )
+  },[id, setNodes])
+
   return (
     <div style={{ top, left, right, bottom }} className="context-menu" {...props}>
       <button onClick={editNode}>edit</button>
       <button onClick={duplicateNode}>duplicate</button>
+      { node?.parentNode &&
+        <button onClick={decoupleNode}>ungroup</button>
+      }
+      { children.length <= 0 &&
       <button onClick={deleteNode}>delete</button>
+      }
     </div>
   );
 }

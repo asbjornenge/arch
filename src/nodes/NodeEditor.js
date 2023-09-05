@@ -15,6 +15,7 @@ export default function NodeEditor({ node, setNode, setNodes, onChange, ...props
   const [file, setFile] = useState(node?.data?.file || '')
   const [fileExists, setFileExists] = useState(true)
   const [shape, setShape] = useState(node?.data?.shape || 'square')
+  const [isGroup, setIsGroup] = useState(node?.data?.isGroup || false)
 
   useEffect(() => {
     setNodes((nds) =>
@@ -25,13 +26,14 @@ export default function NodeEditor({ node, setNode, setNodes, onChange, ...props
             label: label,
             shape: shape,
             file: file,
+            isGroup: isGroup,
             fileExists: fileExists
           }
         }
         return n
       })
     )
-  }, [label, file, shape, fileExists, node.id, setNodes])
+  }, [label, file, shape, isGroup, fileExists, node.id, setNodes])
 
   useEffect(() => {
     const checkFileExistence = async () => {
@@ -80,11 +82,16 @@ export default function NodeEditor({ node, setNode, setNodes, onChange, ...props
           <AiOutlineEdit onClick={handleEditFile}  style={{ cursor: 'pointer' }} />
         }
       </FileInputWrapper>
+      <label>shape:</label>
       <ShapeSelector>
         <Shape selected={shape === 'square'} onClick={() => setShape('square')}><Square /></Shape>
         <Shape selected={shape === 'circle'} onClick={() => setShape('circle')}><Circle /></Shape>
         <Shape selected={shape === 'cylinder'} onClick={() => setShape('cylinder')}><Cylinder /></Shape>
       </ShapeSelector>
+      <label>group:</label>
+      <CheckBoxContainer>
+        <input type="checkbox" checked={isGroup} onChange={(e) => setIsGroup(e.target.checked)} />
+      </CheckBoxContainer>
       <div className="buttons">
         <button className="archButton" onClick={handleClose}>Close</button>
       </div>
@@ -100,7 +107,6 @@ const FileInputWrapper = styled.div`
 
 const ShapeSelector  = styled.div`
   display: flex;
-  margin-top: 5px;
   gap: 5px;
 `
 
@@ -144,4 +150,8 @@ const Cylinder = styled.div`
     radial-gradient(50% var(--r) at 50% calc(100% - var(--r)), #fff3 99.99%, #0000 0),
     white;
   border-radius: 100% / calc(var(--r) * 2);
+`
+
+const CheckBoxContainer = styled.div`
+  display: flex;
 `

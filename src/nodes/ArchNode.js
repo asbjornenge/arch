@@ -28,10 +28,14 @@ export default function CustomNode({ id, data, selected }) {
   if (isAddingEdge) sourceStyle.zIndex = 1
   if (isTarget) targetStyle.zIndex = 2
   if (isTarget) nodeStyle.borderStyle = 'dashed'
-  const shape = data?.shape || 'square'
+  let shape = data?.shape || 'square'
+  if (data?.isGroup) shape = 'square'
+  let archNodeClasses = `ArchNode ${shape}`
+  if (data?.isGroup) archNodeClasses += ' group'
+  if (data?.dragTarget) archNodeClasses += ' target'
 
   return (
-    <div className={`ArchNode ${shape}`} style={nodeStyle}>
+    <div className={archNodeClasses} style={nodeStyle}>
       { data?.file &&
         <SVGIconContainer className={`fileIndicator ${!!!data?.fileExists ? 'missing' : ''}`} size={15}>
           <AiOutlineFileText />
@@ -54,7 +58,7 @@ export default function CustomNode({ id, data, selected }) {
         type="target" 
         style={targetStyle}
       />
-      {data?.label}
+      <div className="label">{data?.label}</div>
     </div>
   );
 }
