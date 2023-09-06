@@ -34,13 +34,18 @@ export default function ContextMenu({ id, top, left, right, bottom, setNode, par
     setNodes((nds) =>
       nds.map(n => {
         if (n.id === id) {
+          let parentNodeId = n.parentNode
+          const parent = getNode(parentNodeId)
+          const parentRightX = parent.position.x + parent.width + 20
+          const parentCenterY = parent.position.y + parent.height/2 - n.height/2
+          n.position = { x: parentRightX, y: parentCenterY }
           delete n.parentNode
           delete n.extend
         }
         return n
       })
     )
-  },[id, setNodes])
+  },[id, setNodes, getNode])
 
   return (
     <div style={{ top, left, right, bottom }} className="context-menu" {...props}>

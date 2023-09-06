@@ -11,7 +11,7 @@ import MarkdownEditor from './markdown.js'
 import DiagramEditor from './diagram.js'
 import archLogoSvg from './graphics/logo.svg'
 import { SVGIconContainerButton } from './components/SVGIconContainer'
-import { fileState } from './state'
+import { fileState, historyState, MAX_HISTORY_SHAPSHOTS } from './state'
 
 const TOP_HEIGHT = 45
 const WORKSPACE_HEIGHT_MARGIN = 2
@@ -25,6 +25,7 @@ const getSize = () => {
 
 export default function Arch() {
   const { file, setFile } = fileState() 
+  const { history, addSnapshot } = historyState() 
   const [panning, setPanning] = useState('both')
   const [size, setSize] = useState(getSize())
   const [flow, setFlow] = useState(null)
@@ -32,6 +33,7 @@ export default function Arch() {
   const [rfInstance, setRfInstance] = useState(null)
   const [fileHash, setFileHash] = useState('')
   const [archHash, setArchHash] = useState('')
+  const [historyIndex, setHistoryIndex] = useState(-1)
 
   const handleResize = useCallback(() => {
     let ticking = false;
@@ -44,17 +46,59 @@ export default function Arch() {
     } 
   }, [])
 
-  useEffect(() => {
-    window.addEventListener('resize', handleResize);
-    return () => window.removeEventListener('resize', handleResize);
-  }, [handleResize])
+  const handleUndoRedo = useCallback((e) => {
+    if (e.target.type === 'textarea') return
+    // Undo
+    if (e.keyCode === 90 && e.ctrlKey) {
+      e.preventDefault()
+      e.stopPropagation()
+      let currentIndex = historyIndex !== -1 ? historyIndex : history.length -1
+      if (currentIndex <= 0) return
+      let nextIndex = currentIndex - 1
+      let newState = history[nextIndex]
+      setFlow(newState.flow)
+      setHistoryIndex(nextIndex)
+      console.log('Undo to', nextIndex, newState.hash)
+    }
+    // Redo
+    if (e.keyCode === 89 && e.ctrlKey) {
+      e.preventDefault()
+      e.stopPropagation()
+      let currentIndex = historyIndex !== -1 ? historyIndex : history.length -1
+      if (currentIndex > MAX_HISTORY_SHAPSHOTS) return // Note we keep max 30 states?
+      if (currentIndex === history.length-1) return
+      let nextIndex = currentIndex + 1
+      let newState = history[nextIndex]
+      setFlow(newState.flow)
+      setHistoryIndex(nextIndex)
+      console.log('Redo to', nextIndex, newState.hash)
+    } 
+  }, [history, historyIndex])
 
-  const getContent = () => {
+  const blockReload = useCallback((e) => {
+    if (e.keyCode === 82 && e.ctrlKey) {
+      e.preventDefault()
+      e.stopPropagation()
+    }
+  }, [])
+
+  useEffect(() => {
+    window.addEventListener('resize', handleResize)
+    window.addEventListener('keydown', blockReload)
+    window.addEventListener('keydown', handleUndoRedo)
+    return () => {
+      window.removeEventListener('resize', handleResize)
+      window.removeEventListener('keydown', blockReload)
+      window.removeEventListener('keydown', handleUndoRedo)
+    }
+  }, [handleResize, blockReload, handleUndoRedo])
+
+  const getContent = useCallback(() => {
     return {
       notes: markdown,
       diagram: rfInstance ? rfInstance.toObject() : {}
     }
-  }
+  }, [markdown, rfInstance])
 
   const handleOpenFile = async () => {
     const dialogConfig = {
@@ -101,9 +145,24 @@ export default function Arch() {
 
   const handleChange = (prop, val) => {
     const content = getContent()
-    if (prop === 'notes')
-      content[prop] = val
-    setArchHash(ohash(content))
+    if (prop === 'notes') {
+      content.notes = val
+    }
+    const contentHash = ohash(content)
+    const flowHash = ohash(content.diagram)
+    const flowHashes = history.map(h => h.hash)
+    const newFlow = flowHashes.indexOf(flowHash) < 0
+    console.log('newContent', historyIndex)
+    //console.log('newContent', newContent, contentHash)
+    setArchHash(contentHash)
+    if (newFlow) {
+      setFlow(content.diagram)
+      addSnapshot({ 
+        flow: content.diagram,
+        hash: flowHash 
+      }, historyIndex)
+      setHistoryIndex(-1)
+    }
   }
 
   let markdownWidth = size.width / 3
@@ -148,7 +207,13 @@ export default function Arch() {
         </MarkdownSpace>
         <DiagramSpace width={diagramWidth} height={workspaceHeight} hidden={['both', 'diagram'].indexOf(panning) < 0}>
           <ReactFlowProvider>
-            <DiagramEditor flow={flow} setRfInstance={setRfInstance} offsetY={TOP_HEIGHT} offsetX={size.width - diagramWidth} onChange={handleChange} />
+            <DiagramEditor 
+              flow={flow} 
+              offsetY={TOP_HEIGHT} 
+              offsetX={size.width - diagramWidth} 
+              onChange={handleChange} 
+              setRfInstance={setRfInstance}
+            />
           </ReactFlowProvider>
         </DiagramSpace>
       </Workspace>

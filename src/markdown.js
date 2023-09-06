@@ -1,3 +1,4 @@
+import { useMemo } from 'react'
 import SimpleMDE from "react-simplemde-editor"
 import "easymde/dist/easymde.min.css"
 
@@ -9,17 +10,19 @@ const FOOTER_HEIGHT = 29
 export default function MarkdownEditor({ height, markdown, setMarkdown, onChange }) {
   const editorHeight = height - TOOLBAR_HEIGHT - FOOTER_HEIGHT
 
-  const options = {
-    autofocus: true,
+  const options = useMemo(() => ({
+    autofocus: false,
     spellChecker: false,
     minHeight: `${editorHeight}px`,
     maxHeight: `${editorHeight}px`
-  }
+
+  }), [editorHeight])
 
   const handleMarkdownChange = (md) => {
+    console.log('change event')
     setMarkdown(md)
     clearTimeout(window.notesChangeTimeout)
-    window.notesChangeTimeout= setTimeout(() => {
+    window.notesChangeTimeout = setTimeout(() => {
       onChange('notes', md)
     }, 1000)
   }

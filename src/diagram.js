@@ -42,7 +42,7 @@ const defaultEdgeOptions = {
   },
 }
 
-export default function DiagramEditor({ offsetY, offsetX, setRfInstance, flow, onChange }) {
+export default function DiagramEditor({ offsetY, offsetX, setRfInstance, flow, onChange, onUndo, onRedo }) {
   // eslint-disable-next-line
   const [nodes, setNodes, onNodesChange] = useNodesState([])
   const [edges, setEdges, onEdgesChange] = useEdgesState([])
@@ -53,21 +53,29 @@ export default function DiagramEditor({ offsetY, offsetX, setRfInstance, flow, o
   const ref = useRef(null)
   const { setViewport, getNode } = useReactFlow()
 
-  const onConnect = useCallback((params) => setEdges((eds) => addEdge(params, eds)), [setEdges])
-  const handleNodesChange = (data) => {
+  const onConnect = useCallback((params) => {
+    setEdges((eds) => addEdge(params, eds))
+    clearTimeout(window.diagramChangeTimeout)
+    window.diagramChangeTimeout= setTimeout(() => {
+      onChange('diagram')
+    }, 1000)
+  }, [onChange, setEdges])
+
+  const handleNodesChange = useCallback((data) => {
     onNodesChange(data)
     clearTimeout(window.diagramChangeTimeout)
     window.diagramChangeTimeout= setTimeout(() => {
       onChange('diagram')
     }, 1000)
-  }
-  const handleEdgesChange = (data, tata) => {
+  }, [onChange, onNodesChange])
+
+  const handleEdgesChange = useCallback((data) => {
     onEdgesChange(data)
     clearTimeout(window.diagramChangeTimeout)
     window.diagramChangeTimeout= setTimeout(() => {
       onChange('diagram')
     }, 1000)
-  }
+  },[onChange, onEdgesChange])
 
   const onNodeDragStart = (evt, node) => {
     if (node.parentNode) return
@@ -109,12 +117,11 @@ export default function DiagramEditor({ offsetY, offsetX, setRfInstance, flow, o
     setNodes((nodes) =>
       nodes.map((node) => {
         if (node.id === dragged_id) {
-          const { x: nx, y: ny } = node.position
-          const { x: tx, y: ty } = target.position
-          console.log(tx, nx)
+          const centerTargetX = target.width/2 - dragged.width/2
+          const centerTargetY = target.height/2 - dragged.height/2
           node.parentNode = target_id
           node.extend = 'parent'
-          node.position = { x: 0, y: ny } // TODO: Calc relative position?
+          node.position = { x: centerTargetX, y: centerTargetY }
         }
         return node;
       }).sort((a,b) => {
