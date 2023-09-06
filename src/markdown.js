@@ -19,7 +19,6 @@ export default function MarkdownEditor({ height, markdown, setMarkdown, onChange
   }), [editorHeight])
 
   const handleMarkdownChange = (md) => {
-    console.log('change event')
     setMarkdown(md)
     clearTimeout(window.notesChangeTimeout)
     window.notesChangeTimeout = setTimeout(() => {

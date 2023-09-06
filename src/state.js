@@ -15,6 +15,7 @@ export const controlState = create((set) => ({
 
 export const historyState = create((set) => ({
   history: [],
+  clearHistory: () => set((state) => ({ history: [] })),
   addSnapshot: (snapshot, slashIndex) => set((state) => { 
     let history = state.history
     if (slashIndex !== -1) {

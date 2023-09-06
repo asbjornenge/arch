@@ -25,7 +25,7 @@ const getSize = () => {
 
 export default function Arch() {
   const { file, setFile } = fileState() 
-  const { history, addSnapshot } = historyState() 
+  const { history, addSnapshot, clearHistory } = historyState() 
   const [panning, setPanning] = useState('both')
   const [size, setSize] = useState(getSize())
   const [flow, setFlow] = useState(null)
@@ -117,6 +117,7 @@ export default function Arch() {
     setFlow(content.diagram)
     setFileHash(ohash(content))
     setArchHash(ohash(content))
+    clearHistory()
   }
 
   const handleSaveFile = async () => {
@@ -152,7 +153,7 @@ export default function Arch() {
     const flowHash = ohash(content.diagram)
     const flowHashes = history.map(h => h.hash)
     const newFlow = flowHashes.indexOf(flowHash) < 0
-    console.log('newContent', historyIndex)
+    //console.log('newContent', historyIndex)
     //console.log('newContent', newContent, contentHash)
     setArchHash(contentHash)
     if (newFlow) {
