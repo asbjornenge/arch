@@ -55,6 +55,14 @@
   position: absolute;
   top: 5px;
 }
+.ArchNode.group.cylinder .label {
+  position: absolute;
+  top: 10px;
+}
+.ArchNode.group.circle .label {
+  position: absolute;
+  top: 20px;
+}
 
 div.ArchHandle {
   width: 100%;

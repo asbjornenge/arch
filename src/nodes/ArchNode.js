@@ -30,7 +30,7 @@ export default function CustomNode({ id, data, selected }) {
   if (isTarget) targetStyle.zIndex = 2
   if (isTarget) nodeStyle.borderStyle = 'dashed'
   let shape = data?.shape || 'square'
-  if (data?.isGroup) shape = 'square'
+  //if (data?.isGroup) shape = 'square'
   let archNodeClasses = `ArchNode ${shape}`
   if (data?.isGroup) archNodeClasses += ' group'
   if (data?.dragTarget) archNodeClasses += ' target'
