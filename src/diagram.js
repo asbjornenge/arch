@@ -179,12 +179,16 @@ export default function DiagramEditor({ offsetY, offsetX, setRfInstance, flow, o
 //    setNode(null)
   }, [setMenu])
 
+//      snapToGrid={true} <- Setting?
+
   return (
     <ReactFlow
       ref={ref}
       nodes={nodes}
       edges={edges}
       onInit={setRfInstance}
+      minZoom={0}
+      maxZoom={4}
       nodeTypes={nodeTypes}
       edgeTypes={edgeTypes}
       onConnect={onConnect}
