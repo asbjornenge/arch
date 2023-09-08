@@ -13,10 +13,11 @@ export default function NodeEditor({ node, setNode, setNodes, onChange, ...props
   const [label, setLabel] = useState(node?.data?.label || '')
   const { file: rootFile } = fileState()
   const [file, setFile] = useState(node?.data?.file || '')
-  const [fileExists, setFileExists] = useState(true)
+  const [notes, setNotes] = useState(node?.data?.notes || '')
   const [shape, setShape] = useState(node?.data?.shape || 'square')
   const [isGroup, setIsGroup] = useState(node?.data?.isGroup || false)
   const [fontSize, setFontSize] = useState(node?.data?.fontSize || '1em')
+  const [fileExists, setFileExists] = useState(true)
 
   useEffect(() => {
     setNodes((nds) =>
@@ -24,9 +25,10 @@ export default function NodeEditor({ node, setNode, setNodes, onChange, ...props
         if (n.id === node.id) {
           n.data = {
             ...n.data,
+            file: file,
+            notes: notes,
             label: label,
             shape: shape,
-            file: file,
             isGroup: isGroup,
             fileExists: fileExists,
             fontSize: fontSize
@@ -35,7 +37,7 @@ export default function NodeEditor({ node, setNode, setNodes, onChange, ...props
         return n
       })
     )
-  }, [label, file, shape, isGroup, fontSize, fileExists, node.id, setNodes])
+  }, [label, file, shape, notes, isGroup, fontSize, fileExists, node.id, setNodes])
 
   useEffect(() => {
     const checkFileExistence = async () => {
@@ -96,6 +98,8 @@ export default function NodeEditor({ node, setNode, setNodes, onChange, ...props
       </CheckBoxContainer>
       <label>font-size:</label>
       <input value={fontSize} onChange={(evt) => setFontSize(evt.target.value)} />
+      <label>notes:</label>
+      <textarea value={notes} onChange={(evt) => setNotes(evt.target.value)} />
       <div className="buttons">
         <button className="archButton" onClick={handleClose}>Close</button>
       </div>
