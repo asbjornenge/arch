@@ -9,6 +9,7 @@ import ReactFlow, {
   useNodesState,
   useEdgesState,
 } from 'reactflow'
+import { ONCHANGE_TIMEOUT } from './state'
 import NodeEditor from './nodes/NodeEditor' 
 import ContextMenu from './nodes/ContextMenu' 
 import ArchNode from './nodes/ArchNode'
@@ -58,7 +59,7 @@ export default function DiagramEditor({ offsetY, offsetX, setRfInstance, flow, o
     clearTimeout(window.diagramChangeTimeout)
     window.diagramChangeTimeout= setTimeout(() => {
       onChange('diagram')
-    }, 1000)
+    }, ONCHANGE_TIMEOUT)
   }, [onChange, setEdges])
 
   const handleNodesChange = useCallback((data) => {
@@ -66,7 +67,7 @@ export default function DiagramEditor({ offsetY, offsetX, setRfInstance, flow, o
     clearTimeout(window.diagramChangeTimeout)
     window.diagramChangeTimeout= setTimeout(() => {
       onChange('diagram')
-    }, 1000)
+    }, ONCHANGE_TIMEOUT)
   }, [onChange, onNodesChange])
 
   const handleEdgesChange = useCallback((data) => {
@@ -74,12 +75,12 @@ export default function DiagramEditor({ offsetY, offsetX, setRfInstance, flow, o
     clearTimeout(window.diagramChangeTimeout)
     window.diagramChangeTimeout= setTimeout(() => {
       onChange('diagram')
-    }, 1000)
+    }, ONCHANGE_TIMEOUT)
   },[onChange, onEdgesChange])
 
   const onNodeDragStart = (evt, node) => {
-    if (node.parentNode) return
-    dragRef.current = node;
+    if (node.parentNode) return // TODO: Allow this later, but it requires sorting fixes and ungroup fixes
+    dragRef.current = node
   };
 
   const onNodeDrag = (evt, node) => {
@@ -96,10 +97,8 @@ export default function DiagramEditor({ offsetY, offsetX, setRfInstance, flow, o
         centerX < n.position.x + n.width &&
         centerY > n.position.y &&
         centerY < n.position.y + n.height &&
-        n.id !== node.id &&
-        !n.parentNode
+        n.id !== node.id
     );
-    //console.log(targetNode)
 
     setTarget(targetNode);
   };
@@ -112,7 +111,7 @@ export default function DiagramEditor({ offsetY, offsetX, setRfInstance, flow, o
     if (!dragged_id) return
 
     const dragged = getNode(dragged_id)
-    if (dragged?.data?.isGroup) return
+    //if (dragged?.data?.isGroup) return
 
     setNodes((nodes) =>
       nodes.map((node) => {
@@ -125,8 +124,11 @@ export default function DiagramEditor({ offsetY, offsetX, setRfInstance, flow, o
         }
         return node;
       }).sort((a,b) => {
-        if (a.parentNode === b.parentNode) return 0
-        return a.parentNode && !b.parentNode ? 1 : -1
+        if (a.parentNode && !b.parentNode) return 1
+        if (a.parentNode && b.parentNode) {
+          if (a?.data?.isGroup && !b?.data?.isGroup) return -1
+        }
+        return 0
       })
     )
 
@@ -137,13 +139,9 @@ export default function DiagramEditor({ offsetY, offsetX, setRfInstance, flow, o
   /** DETECT COLLISION **/
   useEffect(() => {
     //console.log(target?.id)
-    let canDrop = false
-    let dragged_id = dragRef?.current?.id
-    let dragged = getNode(dragged_id)
-    if (!dragged?.data?.isGroup) canDrop = true
     setNodes((nodes) =>
       nodes.map((node) => {
-        if (node.id === target?.id && canDrop) {
+        if (node.id === target?.id) {
           node.data.dragTarget = true
         } else {
           delete node.data.dragTarget

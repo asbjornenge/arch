@@ -1,5 +1,6 @@
 import { useMemo } from 'react'
 import SimpleMDE from "react-simplemde-editor"
+import { ONCHANGE_TIMEOUT } from './state'
 import "easymde/dist/easymde.min.css"
 
 // NOTE: It is possible to swap out the preview engine and get a nicer preview rendering.
@@ -23,7 +24,7 @@ export default function MarkdownEditor({ height, markdown, setMarkdown, onChange
     clearTimeout(window.notesChangeTimeout)
     window.notesChangeTimeout = setTimeout(() => {
       onChange('notes', md)
-    }, 1000)
+    }, ONCHANGE_TIMEOUT)
   }
 
   return (

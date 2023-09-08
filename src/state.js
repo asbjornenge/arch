@@ -1,6 +1,7 @@
 import { create } from 'zustand'
 
 export const MAX_HISTORY_SHAPSHOTS = 30
+export const ONCHANGE_TIMEOUT = 500
 
 export const fileState = create((set) => ({
   file: null,
