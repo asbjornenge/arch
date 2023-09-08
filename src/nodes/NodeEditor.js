@@ -16,6 +16,7 @@ export default function NodeEditor({ node, setNode, setNodes, onChange, ...props
   const [fileExists, setFileExists] = useState(true)
   const [shape, setShape] = useState(node?.data?.shape || 'square')
   const [isGroup, setIsGroup] = useState(node?.data?.isGroup || false)
+  const [fontSize, setFontSize] = useState(node?.data?.fontSize || '1em')
 
   useEffect(() => {
     setNodes((nds) =>
@@ -27,13 +28,14 @@ export default function NodeEditor({ node, setNode, setNodes, onChange, ...props
             shape: shape,
             file: file,
             isGroup: isGroup,
-            fileExists: fileExists
+            fileExists: fileExists,
+            fontSize: fontSize
           }
         }
         return n
       })
     )
-  }, [label, file, shape, isGroup, fileExists, node.id, setNodes])
+  }, [label, file, shape, isGroup, fontSize, fileExists, node.id, setNodes])
 
   useEffect(() => {
     const checkFileExistence = async () => {
@@ -92,6 +94,8 @@ export default function NodeEditor({ node, setNode, setNodes, onChange, ...props
       <CheckBoxContainer>
         <input type="checkbox" checked={isGroup} onChange={(e) => setIsGroup(e.target.checked)} />
       </CheckBoxContainer>
+      <label>font-size:</label>
+      <input value={fontSize} onChange={(evt) => setFontSize(evt.target.value)} />
       <div className="buttons">
         <button className="archButton" onClick={handleClose}>Close</button>
       </div>

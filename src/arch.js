@@ -46,6 +46,81 @@ export default function Arch() {
     } 
   }, [])
 
+
+  const getContent = useCallback(() => {
+    return {
+      notes: markdown,
+      diagram: rfInstance ? rfInstance.toObject() : {}
+    }
+  }, [markdown, rfInstance])
+
+  const handleOpenFile = async () => {
+    const dialogConfig = {
+      title: 'Select a file',
+      buttonLabel: 'This one will do',
+      properties: ['openFile'],
+      filters: [
+        { name: 'Arch file', extensions: ['arch'] },
+      ]
+    }
+    const res = await window.electron.openDialog('showOpenDialog', dialogConfig)
+    if (!res) return
+    setFile(res.file)
+    const content = JSON.parse(res.content)
+    setMarkdown(content.notes)
+    setFlow(content.diagram)
+    setFileHash(ohash(content))
+    setArchHash(ohash(content))
+    clearHistory()
+  }
+
+  const handleSaveFileDialog = useCallback(async () => {
+    const content = getContent()
+    const dialogConfig = {
+      defaultPath: '',
+      payload: JSON.stringify(content)
+    }
+    const res = await window.electron.openDialog('showSaveDialog', dialogConfig)
+    if (!res) return
+    setFile(res.file)
+    setFileHash(ohash(content))
+  }, [getContent, setFile, setFileHash])
+
+  const handleSaveFile = useCallback(async () => {
+    if (!file) return await handleSaveFileDialog()
+    const content = getContent()
+    await window.electron.saveFile(file, JSON.stringify(content))
+    const contentHash = ohash(content)
+    setFileHash(contentHash)
+    setArchHash(contentHash)
+  },[file, getContent, handleSaveFileDialog])
+
+  const handleExternalLink = async (url) => {
+    await window.electron.openExternalLink(url)
+  }
+
+  const handleChange = (prop, val) => {
+    const content = getContent()
+    if (prop === 'notes') {
+      content.notes = val
+    }
+    const contentHash = ohash(content)
+    const flowHash = ohash(content.diagram)
+    const flowHashes = history.map(h => h.hash)
+    const newFlow = flowHashes.indexOf(flowHash) < 0
+    //console.log('newContent', historyIndex)
+    //console.log('newContent', newContent, contentHash)
+    setArchHash(contentHash)
+    if (newFlow) {
+      setFlow(content.diagram)
+      addSnapshot({ 
+        flow: content.diagram,
+        hash: flowHash 
+      }, historyIndex)
+      setHistoryIndex(-1)
+    }
+  }
+
   const handleUndoRedo = useCallback((e) => {
     if (e.target.type === 'textarea') return
     // Undo
@@ -82,89 +157,26 @@ export default function Arch() {
     }
   }, [])
 
+  const bindSave = useCallback(async (e) => {
+    if (e.keyCode === 83 && e.ctrlKey) {
+      e.preventDefault()
+      e.stopPropagation()
+      await handleSaveFile()
+    }
+  }, [handleSaveFile])
+
   useEffect(() => {
     window.addEventListener('resize', handleResize)
     window.addEventListener('keydown', blockReload)
     window.addEventListener('keydown', handleUndoRedo)
+    window.addEventListener('keydown', bindSave)
     return () => {
       window.removeEventListener('resize', handleResize)
       window.removeEventListener('keydown', blockReload)
       window.removeEventListener('keydown', handleUndoRedo)
+      window.removeEventListener('keydown', bindSave)
     }
-  }, [handleResize, blockReload, handleUndoRedo])
-
-  const getContent = useCallback(() => {
-    return {
-      notes: markdown,
-      diagram: rfInstance ? rfInstance.toObject() : {}
-    }
-  }, [markdown, rfInstance])
-
-  const handleOpenFile = async () => {
-    const dialogConfig = {
-      title: 'Select a file',
-      buttonLabel: 'This one will do',
-      properties: ['openFile'],
-      filters: [
-        { name: 'Arch file', extensions: ['arch'] },
-      ]
-    }
-    const res = await window.electron.openDialog('showOpenDialog', dialogConfig)
-    if (!res) return
-    setFile(res.file)
-    const content = JSON.parse(res.content)
-    setMarkdown(content.notes)
-    setFlow(content.diagram)
-    setFileHash(ohash(content))
-    setArchHash(ohash(content))
-    clearHistory()
-  }
-
-  const handleSaveFile = async () => {
-    if (!file) return await handleSaveFileDialog()
-    const content = getContent()
-    await window.electron.saveFile(file, JSON.stringify(content))
-    setFileHash(ohash(content))
-  }
-
-  const handleSaveFileDialog = async () => {
-    const content = getContent()
-    const dialogConfig = {
-      defaultPath: '',
-      payload: JSON.stringify(content)
-    }
-    const res = await window.electron.openDialog('showSaveDialog', dialogConfig)
-    if (!res) return
-    setFile(res.file)
-    setFileHash(ohash(content))
-  }
-
-
-  const handleExternalLink = async (url) => {
-    await window.electron.openExternalLink(url)
-  }
-
-  const handleChange = (prop, val) => {
-    const content = getContent()
-    if (prop === 'notes') {
-      content.notes = val
-    }
-    const contentHash = ohash(content)
-    const flowHash = ohash(content.diagram)
-    const flowHashes = history.map(h => h.hash)
-    const newFlow = flowHashes.indexOf(flowHash) < 0
-    //console.log('newContent', historyIndex)
-    //console.log('newContent', newContent, contentHash)
-    setArchHash(contentHash)
-    if (newFlow) {
-      setFlow(content.diagram)
-      addSnapshot({ 
-        flow: content.diagram,
-        hash: flowHash 
-      }, historyIndex)
-      setHistoryIndex(-1)
-    }
-  }
+  }, [handleResize, blockReload, handleUndoRedo, bindSave])
 
   let markdownWidth = size.width / 3
   if (markdownWidth < 440) markdownWidth = 440 // Smallest possible to avoid menu wrapping

@@ -25,6 +25,7 @@ export default function CustomNode({ id, data, selected }) {
   const sourceStyle = { zIndex: -1 }
   const targetStyle = { zIndex: -1 }
   const nodeStyle = {}
+  const labelStyle = {}
   if (isAddingEdge) sourceStyle.zIndex = 1
   if (isTarget) targetStyle.zIndex = 2
   if (isTarget) nodeStyle.borderStyle = 'dashed'
@@ -33,6 +34,7 @@ export default function CustomNode({ id, data, selected }) {
   let archNodeClasses = `ArchNode ${shape}`
   if (data?.isGroup) archNodeClasses += ' group'
   if (data?.dragTarget) archNodeClasses += ' target'
+  if (data?.fontSize) labelStyle.fontSize = `${data?.fontSize}`
 
   return (
     <div className={archNodeClasses} style={nodeStyle}>
@@ -58,7 +60,7 @@ export default function CustomNode({ id, data, selected }) {
         type="target" 
         style={targetStyle}
       />
-      <div className="label">{data?.label}</div>
+      <div className="label" style={labelStyle}>{data?.label}</div>
     </div>
   );
 }
