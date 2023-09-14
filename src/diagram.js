@@ -97,7 +97,8 @@ export default function DiagramEditor({ offsetY, offsetX, setRfInstance, flow, o
         centerX < n.position.x + n.width &&
         centerY > n.position.y &&
         centerY < n.position.y + n.height &&
-        n.id !== node.id
+        n.id !== node.id &&
+        !n.parentNode
     );
 
     setTarget(targetNode);
