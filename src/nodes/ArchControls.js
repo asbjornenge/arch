@@ -6,7 +6,7 @@ import {
 } from 'reactflow'
 import { uid } from 'uid'
 import { FiArrowUpRight } from 'react-icons/fi'
-import { AiOutlineExport, AiOutlineAppstoreAdd } from 'react-icons/ai'
+import { AiOutlineDownload, AiOutlineAppstoreAdd } from 'react-icons/ai'
 import { toPng } from 'html-to-image'
 import { getRectOfNodes, getTransformForBounds } from 'reactflow'
 import { SVGIconContainer } from '../components/SVGIconContainer'
@@ -83,7 +83,7 @@ export default function ArchControls({ setNodes }) {
     <Controls>
       <ControlButton onClick={handleSaveDiagram} title="save">
         <SVGIconContainer iconsize={15}>
-          <AiOutlineExport />
+          <AiOutlineDownload />
         </SVGIconContainer>
       </ControlButton>
       <ControlButton style={edgeAddingStyle} onClick={toggleAddingEdge} title="edges">

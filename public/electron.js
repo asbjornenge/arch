@@ -1,5 +1,6 @@
 const path = require('path')
 const fs = require('fs')
+const { mdToPdf } = require('md-to-pdf')
 const { app, shell, BrowserWindow, ipcMain, dialog } = require('electron')
 
 function createWindow() {
@@ -81,6 +82,13 @@ app.whenReady().then(() => {
     await write()
     return true
   }) 
+  ipcMain.handle('savemarkdown', async (event, markdown) => {
+    const res = await dialog.showSaveDialog({defaultPath: ''})
+    if (!res) return
+    if (res.canceled) return
+    await mdToPdf({ content: markdown }, { dest: res.filePath })
+    return true
+  })
   ipcMain.handle('exists', async (event, path) => {
     const exists = () => new Promise((resolve, reject) => {
       fs.access(path, fs.F_OK, (err) => {

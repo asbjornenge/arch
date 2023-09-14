@@ -9,6 +9,7 @@
     "@testing-library/user-event": "^13.5.0",
     "easymde": "^2.16.0",
     "html-to-image": "^1.11.11",
+    "md-to-pdf": "^5.2.4",
     "object-hash": "^3.0.0",
     "react": "^18.2.0",
     "react-color": "^2.19.3",
