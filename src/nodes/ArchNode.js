@@ -35,6 +35,14 @@ export default function CustomNode({ id, data, selected }) {
   if (data?.isGroup) archNodeClasses += ' group'
   if (data?.dragTarget) archNodeClasses += ' target'
   if (data?.fontSize) labelStyle.fontSize = `${data?.fontSize}`
+  if (data?.bgColor) {
+    let c = data?.bgColor
+    nodeStyle.backgroundColor = `rgba(${c.r},${c.g},${c.b},${c.a})`
+  }
+  if (data?.fgColor) {
+    let c = data?.fgColor
+    nodeStyle.color = `rgba(${c.r},${c.g},${c.b},${c.a})`
+  }
 
   return (
     <div className={archNodeClasses} style={nodeStyle}>

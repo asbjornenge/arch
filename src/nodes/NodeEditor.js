@@ -6,6 +6,7 @@ import {
   AiOutlineEdit 
 } from 'react-icons/ai'
 import styled from 'styled-components'
+import { SketchPicker } from 'react-color'
 import { fileState } from '../state'
 import './NodeEditor.css'
 
@@ -17,6 +18,9 @@ export default function NodeEditor({ node, setNode, setNodes, onChange, ...props
   const [shape, setShape] = useState(node?.data?.shape || 'square')
   const [isGroup, setIsGroup] = useState(node?.data?.isGroup || false)
   const [fontSize, setFontSize] = useState(node?.data?.fontSize || '1em')
+  const [bgColor, setBgColor] = useState(node?.data?.bgColor || 'white')
+  const [fgColor, setFgColor] = useState(node?.data?.fgColor || 'black')
+  const [colorWhat, setColorWhat] = useState('text')
   const [fileExists, setFileExists] = useState(true)
 
   useEffect(() => {
@@ -30,14 +34,16 @@ export default function NodeEditor({ node, setNode, setNodes, onChange, ...props
             label: label,
             shape: shape,
             isGroup: isGroup,
+            bgColor: bgColor,
+            fgColor: fgColor,
+            fontSize: fontSize,
             fileExists: fileExists,
-            fontSize: fontSize
           }
         }
         return n
       })
     )
-  }, [label, file, shape, notes, isGroup, fontSize, fileExists, node.id, setNodes])
+  }, [label, file, shape, notes, isGroup, fontSize, bgColor, fgColor, fileExists, node.id, setNodes])
 
   useEffect(() => {
     const checkFileExistence = async () => {
@@ -98,6 +104,16 @@ export default function NodeEditor({ node, setNode, setNodes, onChange, ...props
       </CheckBoxContainer>
       <label>font-size:</label>
       <input value={fontSize} onChange={(evt) => setFontSize(evt.target.value)} />
+      <ColorTypeSelectContainer>
+        <label>colors:</label>
+        <div style={{ flex: 'auto' }}></div>
+        <ColorTypeSelectLabel selected={colorWhat === 'text'} onClick={() => setColorWhat('text')}>Text</ColorTypeSelectLabel>
+        <ColorTypeSelectLabel selected={colorWhat === 'background'} onClick={() => setColorWhat('background')}>Background</ColorTypeSelectLabel>
+      </ColorTypeSelectContainer>
+      <SketchPicker
+        color={ colorWhat === 'text' ? fgColor : bgColor }
+        onChange={(color) => colorWhat === 'text' ? setFgColor(color.rgb) : setBgColor(color.rgb)}
+      />
       <label>notes:</label>
       <textarea value={notes} onChange={(evt) => setNotes(evt.target.value)} />
       <div className="buttons">
@@ -162,4 +178,16 @@ const Cylinder = styled.div`
 
 const CheckBoxContainer = styled.div`
   display: flex;
+`
+const ColorTypeSelectContainer = styled.div`
+  display: flex;
+  align-items: flex-end;
+  gap: 5px;
+  margin-right: 5px;
+`
+
+const ColorTypeSelectLabel = styled.div`
+  font-size: 0.6em;
+  cursor: pointer;
+  ${props => props.selected ? 'font-weight: bold;' : ''}
 `

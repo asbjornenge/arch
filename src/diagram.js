@@ -113,6 +113,7 @@ export default function DiagramEditor({ offsetY, offsetX, setRfInstance, flow, o
 
     const dragged = getNode(dragged_id)
     //if (dragged?.data?.isGroup) return
+    if (!target?.data?.isGroup) return
 
     setNodes((nodes) =>
       nodes.map((node) => {
@@ -133,9 +134,9 @@ export default function DiagramEditor({ offsetY, offsetX, setRfInstance, flow, o
       })
     )
 
-    setTarget(null);
-    dragRef.current = null;
-  };
+    setTarget(null)
+    dragRef.current = null
+  }
 
   /** DETECT COLLISION **/
   useEffect(() => {
