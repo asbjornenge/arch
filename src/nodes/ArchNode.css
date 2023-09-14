@@ -11,6 +11,10 @@
   align-items: center;
   font-weight: bold;
   background-color: white;
+  text-align: center;
+}
+.ArchNode.text {
+  border: none;
 }
 .ArchNode.circle {
   border-radius: 50%;

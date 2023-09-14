@@ -7,6 +7,7 @@ import {
 } from 'react-icons/ai'
 import styled from 'styled-components'
 import { SketchPicker } from 'react-color'
+import { BiText } from 'react-icons/bi'
 import { fileState } from '../state'
 import './NodeEditor.css'
 
@@ -97,6 +98,7 @@ export default function NodeEditor({ node, setNode, setNodes, onChange, ...props
         <Shape selected={shape === 'square'} onClick={() => setShape('square')}><Square /></Shape>
         <Shape selected={shape === 'circle'} onClick={() => setShape('circle')}><Circle /></Shape>
         <Shape selected={shape === 'cylinder'} onClick={() => setShape('cylinder')}><Cylinder /></Shape>
+        <Shape selected={shape === 'text'} onClick={() => setShape('text')}><Text><BiText /></Text></Shape>
       </ShapeSelector>
       <label>group:</label>
       <CheckBoxContainer>
@@ -174,6 +176,17 @@ const Cylinder = styled.div`
     radial-gradient(50% var(--r) at 50% calc(100% - var(--r)), #fff3 99.99%, #0000 0),
     white;
   border-radius: 100% / calc(var(--r) * 2);
+`
+
+const Text = styled.div`
+  width: 35px;
+  height: 40px;
+  border: none; 
+  border-radius: 3px;
+  background-color: white;
+  display: flex;
+  align-items: center;
+  justify-content: center;
 `
 
 const CheckBoxContainer = styled.div`
