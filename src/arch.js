@@ -7,14 +7,18 @@ import {
   AiOutlineSave, 
   AiOutlineGithub 
 } from 'react-icons/ai'
+import Settings from './settings.js'
 import NotesEditor from './notes.js'
 import DiagramEditor from './diagram.js'
 import archLogoSvg from './graphics/logo.svg'
 import { SVGIconContainerButton } from './components/SVGIconContainer'
-import { fileState, historyState, MAX_HISTORY_SHAPSHOTS } from './state'
-
-const TOP_HEIGHT = 45
-const WORKSPACE_HEIGHT_MARGIN = 2
+import { 
+  fileState, 
+  TOP_HEIGHT, 
+  historyState, 
+  MAX_HISTORY_SHAPSHOTS, 
+  WORKSPACE_HEIGHT_MARGIN
+} from './state'
 
 const getSize = () => {
   return { 
@@ -26,13 +30,14 @@ const getSize = () => {
 export default function Arch() {
   const { file, setFile } = fileState() 
   const { history, addSnapshot, clearHistory } = historyState() 
-  const [panning, setPanning] = useState('both')
   const [size, setSize] = useState(getSize())
   const [flow, setFlow] = useState(null)
+  const [panning, setPanning] = useState('both')
+  const [settings, setSettings] = useState({})
   const [markdown, setMarkdown] = useState('')
-  const [rfInstance, setRfInstance] = useState(null)
   const [fileHash, setFileHash] = useState('')
   const [archHash, setArchHash] = useState('')
+  const [rfInstance, setRfInstance] = useState(null)
   const [historyIndex, setHistoryIndex] = useState(-1)
 
   const handleResize = useCallback(() => {
@@ -50,9 +55,10 @@ export default function Arch() {
   const getContent = useCallback(() => {
     return {
       notes: markdown,
-      diagram: rfInstance ? rfInstance.toObject() : {}
+      diagram: rfInstance ? rfInstance.toObject() : {},
+      settings: settings
     }
-  }, [markdown, rfInstance])
+  }, [markdown, settings, rfInstance])
 
   const handleOpenFile = async () => {
     const dialogConfig = {
@@ -69,6 +75,7 @@ export default function Arch() {
     const content = JSON.parse(res.content)
     setMarkdown(content.notes)
     setFlow(content.diagram)
+    setSettings(content.settings || {})
     setFileHash(ohash(content))
     setArchHash(ohash(content))
     clearHistory()
@@ -103,6 +110,9 @@ export default function Arch() {
     const content = getContent()
     if (prop === 'notes') {
       content.notes = val
+    }
+    if (prop === 'settings') {
+      content.settings = val
     }
     const contentHash = ohash(content)
     const flowHash = ohash(content.diagram)
@@ -214,6 +224,7 @@ export default function Arch() {
           </TopRight>
         </TopUpper>
       </Top>
+      <Settings settings={settings} setSettings={setSettings} onChange={handleChange} />
       <Workspace>
         <MarkdownSpace width={markdownWidth} height={workspaceHeight} hidden={['both', 'notes'].indexOf(panning) < 0}>
           <NotesEditor height={workspaceHeight} markdown={markdown} setMarkdown={setMarkdown} onChange={handleChange} />

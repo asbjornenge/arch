@@ -1,7 +1,9 @@
 import { create } from 'zustand'
 
-export const MAX_HISTORY_SHAPSHOTS = 30
+export const TOP_HEIGHT = 45
 export const ONCHANGE_TIMEOUT = 500
+export const MAX_HISTORY_SHAPSHOTS = 30
+export const WORKSPACE_HEIGHT_MARGIN = 2
 
 export const fileState = create((set) => ({
   file: null,
