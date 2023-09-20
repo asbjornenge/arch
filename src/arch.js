@@ -7,7 +7,7 @@ import {
   AiOutlineSave, 
   AiOutlineGithub 
 } from 'react-icons/ai'
-import MarkdownEditor from './markdown.js'
+import NotesEditor from './notes.js'
 import DiagramEditor from './diagram.js'
 import archLogoSvg from './graphics/logo.svg'
 import { SVGIconContainerButton } from './components/SVGIconContainer'
@@ -216,7 +216,7 @@ export default function Arch() {
       </Top>
       <Workspace>
         <MarkdownSpace width={markdownWidth} height={workspaceHeight} hidden={['both', 'notes'].indexOf(panning) < 0}>
-          <MarkdownEditor height={workspaceHeight} markdown={markdown} setMarkdown={setMarkdown} onChange={handleChange} />
+          <NotesEditor height={workspaceHeight} markdown={markdown} setMarkdown={setMarkdown} onChange={handleChange} />
         </MarkdownSpace>
         <DiagramSpace width={diagramWidth} height={workspaceHeight} hidden={['both', 'diagram'].indexOf(panning) < 0}>
           <ReactFlowProvider>

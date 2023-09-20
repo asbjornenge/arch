@@ -8,7 +8,7 @@ import "easymde/dist/easymde.min.css"
 const TOOLBAR_HEIGHT = 68
 const FOOTER_HEIGHT = 29
 
-export default function MarkdownEditor({ height, markdown, setMarkdown, onChange }) {
+export default function NotesEditor({ height, markdown, setMarkdown, onChange }) {
   const editorHeight = height - TOOLBAR_HEIGHT - FOOTER_HEIGHT
 
   const saveMarkdown = useCallback(async () => {
