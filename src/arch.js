@@ -3,9 +3,10 @@ import { ReactFlowProvider } from 'reactflow'
 import styled from 'styled-components'
 import ohash from 'object-hash'
 import { 
-  AiOutlineFolderOpen, 
   AiOutlineSave, 
-  AiOutlineGithub 
+  AiOutlineGithub, 
+  AiOutlineSetting,
+  AiOutlineFolderOpen, 
 } from 'react-icons/ai'
 import Settings from './settings.js'
 import NotesEditor from './notes.js'
@@ -38,6 +39,7 @@ export default function Arch() {
   const [fileHash, setFileHash] = useState('')
   const [archHash, setArchHash] = useState('')
   const [rfInstance, setRfInstance] = useState(null)
+  const [showSettings, setShowSettings] = useState(false)
   const [historyIndex, setHistoryIndex] = useState(-1)
 
   const handleResize = useCallback(() => {
@@ -218,13 +220,18 @@ export default function Arch() {
             <Pan selected={panning === 'diagram'} onClick={() => setPanning('diagram')}>Diagram</Pan>
           </PanSelector>
           <TopRight>
+            <SVGIconContainerButton onClick={() => setShowSettings(!showSettings)}>
+              <AiOutlineSetting />
+            </SVGIconContainerButton>
             <SVGIconContainerButton onClick={() => handleExternalLink('https://github.com/asbjornenge/arch')}>
               <AiOutlineGithub />
             </SVGIconContainerButton>
           </TopRight>
         </TopUpper>
       </Top>
-      <Settings settings={settings} setSettings={setSettings} onChange={handleChange} />
+      { showSettings &&
+        <Settings settings={settings} setSettings={setSettings} onChange={handleChange} />
+      }
       <Workspace>
         <MarkdownSpace width={markdownWidth} height={workspaceHeight} hidden={['both', 'notes'].indexOf(panning) < 0}>
           <NotesEditor height={workspaceHeight} markdown={markdown} setMarkdown={setMarkdown} onChange={handleChange} />
@@ -235,6 +242,7 @@ export default function Arch() {
               flow={flow} 
               offsetY={TOP_HEIGHT} 
               offsetX={size.width - diagramWidth} 
+              settings={settings}
               onChange={handleChange} 
               setRfInstance={setRfInstance}
             />
@@ -275,6 +283,7 @@ const TopRight = styled.div`
   width: 200px;
   display: flex;
   justify-content: flex-end;
+  gap: 5px;
 `
 
 const FileName = styled.div`

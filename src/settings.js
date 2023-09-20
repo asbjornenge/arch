@@ -35,8 +35,12 @@ const Wrapper = styled.div`
   border: 1px solid var(--color-border-grey);
   align-items: flex-start;
   padding: 10px;
+  z-index: 1001;
   & label {
     font-size: 0.8em;
+    user-select: none;
   }
-  z-index: 1001;
+  & input[type="checkbox"] {
+    cursor: pointer;
+  }
 `

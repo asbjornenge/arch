@@ -43,7 +43,7 @@ const defaultEdgeOptions = {
   },
 }
 
-export default function DiagramEditor({ offsetY, offsetX, setRfInstance, flow, onChange, onUndo, onRedo }) {
+export default function DiagramEditor({ offsetY, offsetX, setRfInstance, flow, onChange, onUndo, onRedo, settings }) {
   // eslint-disable-next-line
   const [nodes, setNodes, onNodesChange] = useNodesState([])
   const [edges, setEdges, onEdgesChange] = useEdgesState([])
@@ -181,8 +181,6 @@ export default function DiagramEditor({ offsetY, offsetX, setRfInstance, flow, o
 //    setNode(null)
   }, [setMenu])
 
-//      snapToGrid={true} <- Setting?
-
   return (
     <ReactFlow
       ref={ref}
@@ -195,6 +193,7 @@ export default function DiagramEditor({ offsetY, offsetX, setRfInstance, flow, o
       edgeTypes={edgeTypes}
       onConnect={onConnect}
       onNodeDrag={onNodeDrag}
+      snapToGrid={settings?.snapToGrid === true}
       onPaneClick={onPaneClick}
       onNodesChange={handleNodesChange}
       onEdgesChange={handleEdgesChange}
