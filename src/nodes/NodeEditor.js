@@ -21,7 +21,7 @@ export default function NodeEditor({ node, setNode, setNodes, onChange, ...props
   const [fontSize, setFontSize] = useState(node?.data?.fontSize || '1em')
   const [bgColor, setBgColor] = useState(node?.data?.bgColor || 'white')
   const [fgColor, setFgColor] = useState(node?.data?.fgColor || 'black')
-  const [colorWhat, setColorWhat] = useState('text')
+  const [colorWhat, setColorWhat] = useState('background')
   const [fileExists, setFileExists] = useState(true)
 
   useEffect(() => {

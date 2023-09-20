@@ -12,8 +12,6 @@ export default function MarkdownEditor({ height, markdown, setMarkdown, onChange
   const editorHeight = height - TOOLBAR_HEIGHT - FOOTER_HEIGHT
 
   const saveMarkdown = useCallback(async () => {
-    console.log('markdown')
-    console.log('export')
     window.electron.saveMarkdown(markdown)
   }, [markdown])
 
