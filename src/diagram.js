@@ -10,10 +10,10 @@ import ReactFlow, {
   useEdgesState,
 } from 'reactflow'
 import { ONCHANGE_TIMEOUT } from './state'
-import NodeEditor from './nodes/NodeEditor' 
-import ContextMenu from './nodes/ContextMenu' 
-import ArchNode from './components/Node'
 import ArchEdge from './components/Edge'
+import ArchNode from './components/Node'
+import NodeEditor from './components/NodeEditor' 
+import ContextMenu from './nodes/ContextMenu' 
 import ArchControls from './nodes/ArchControls'
 import ArchConnectionLine from './nodes/ArchConnectionLine'
 import 'reactflow/dist/style.css'
