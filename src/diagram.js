@@ -15,7 +15,7 @@ import ArchNode from './components/Node'
 import NodeEditor from './components/NodeEditor' 
 import NodeContextMenu from './components/NodeContextMenu' 
 import DiagramControls from './components/DiagramControls'
-import ArchConnectionLine from './nodes/ArchConnectionLine'
+import ArchConnectionLine from './components/ConnectionLine'
 import 'reactflow/dist/style.css'
 
 const EDGE_STROKE_WIDTH = 2
