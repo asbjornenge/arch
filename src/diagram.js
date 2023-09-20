@@ -14,6 +14,7 @@ import ArchEdge from './components/Edge'
 import ArchNode from './components/Node'
 import NodeEditor from './components/NodeEditor' 
 import NodeContextMenu from './components/NodeContextMenu' 
+import EdgeContextMenu from './components/EdgeContextMenu' 
 import DiagramControls from './components/DiagramControls'
 import ArchConnectionLine from './components/ConnectionLine'
 import 'reactflow/dist/style.css'
@@ -45,13 +46,15 @@ const defaultEdgeOptions = {
 
 export default function DiagramEditor({ offsetY, offsetX, setRfInstance, flow, onChange, onUndo, onRedo, settings }) {
   // eslint-disable-next-line
+  const ref = useRef(null)
+  const dragRef = useRef(null)
+  const [node, setNode] = useState(null)
+  const [edge, setEdge] = useState(null)
+  const [target, setTarget] = useState(null)
+  const [nodeMenu, setNodeMenu] = useState(null)
+  const [edgeMenu, setEdgeMenu] = useState(null)
   const [nodes, setNodes, onNodesChange] = useNodesState([])
   const [edges, setEdges, onEdgesChange] = useEdgesState([])
-  const [target, setTarget] = useState(null)
-  const [node, setNode] = useState(null)
-  const [menu, setMenu] = useState(null)
-  const dragRef = useRef(null)
-  const ref = useRef(null)
   const { setViewport, getNode } = useReactFlow()
 
   const onConnect = useCallback((params) => {
@@ -153,7 +156,7 @@ export default function DiagramEditor({ offsetY, offsetX, setRfInstance, flow, o
     )
   }, [target, setNodes, getNode])
 
-  /** SET CONTEXT MENU **/
+  /** HANDLE LOADING NEW ARCH FILE **/
   useEffect(() => {
     if (!flow) return
     const { x = 0, y = 0, zoom = 1 } = flow.viewport
@@ -164,22 +167,37 @@ export default function DiagramEditor({ offsetY, offsetX, setRfInstance, flow, o
 
   const onNodeContextMenu = (event, node) => {
     event.preventDefault();
-    //const pane = ref.current.getBoundingClientRect(); Can use to calc edge collision with menu
 
     let top = event.clientY - offsetY
     let left = event.clientX - offsetX
 
-    setMenu({
+    setNodeMenu({
       id: node.id,
       top: top,
       left: left,
     })
   }
 
+  const onEdgeContextMenu = (event, edge) => {
+    event.preventDefault();
+
+    let top = event.clientY - offsetY
+    let left = event.clientX - offsetX
+
+    console.log(event, edge)
+
+    setEdgeMenu({
+      id: edge.id,
+      top: top,
+      left: left,
+    })
+  }
+
   const onPaneClick = useCallback(() => { 
-    setMenu(null)
+    setNodeMenu(null)
+    setEdgeMenu(null)
 //    setNode(null)
-  }, [setMenu])
+  }, [setNodeMenu])
 
   return (
     <ReactFlow
@@ -200,6 +218,7 @@ export default function DiagramEditor({ offsetY, offsetX, setRfInstance, flow, o
       onNodeDragStop={onNodeDragStop}
       onNodeDragStart={onNodeDragStart}
       onNodeContextMenu={onNodeContextMenu}
+      onEdgeContextMenu={onEdgeContextMenu}
       defaultEdgeOptions={defaultEdgeOptions}
       connectionLineStyle={connectionLineStyle}
       connectionLineComponent={ArchConnectionLine}
@@ -207,8 +226,10 @@ export default function DiagramEditor({ offsetY, offsetX, setRfInstance, flow, o
       <MiniMap />
       <DiagramControls setNodes={setNodes} />
       <Background />
-      {menu && <NodeContextMenu onClick={onPaneClick} {...menu} setNode={setNode} />}
+      {nodeMenu && <NodeContextMenu onClick={onPaneClick} {...nodeMenu} setNode={setNode} />}
+      {edgeMenu && <EdgeContextMenu onClick={onPaneClick} {...edgeMenu} setEdge={setEdge} />}
       {node && <Panel position="top-right"><NodeEditor key={node?.id} node={node} setNode={setNode} setNodes={setNodes} onChange={onChange} /></Panel>}
+      {edge && <Panel position="top-right">Edge editor</Panel>}
     </ReactFlow>
   )
 }
