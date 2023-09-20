@@ -14,7 +14,7 @@ import ArchEdge from './components/Edge'
 import ArchNode from './components/Node'
 import NodeEditor from './components/NodeEditor' 
 import NodeContextMenu from './components/NodeContextMenu' 
-import ArchControls from './nodes/ArchControls'
+import DiagramControls from './components/DiagramControls'
 import ArchConnectionLine from './nodes/ArchConnectionLine'
 import 'reactflow/dist/style.css'
 
@@ -206,7 +206,7 @@ export default function DiagramEditor({ offsetY, offsetX, setRfInstance, flow, o
       connectionLineComponent={ArchConnectionLine}
     >
       <MiniMap />
-      <ArchControls setNodes={setNodes} />
+      <DiagramControls setNodes={setNodes} />
       <Background />
       {menu && <NodeContextMenu onClick={onPaneClick} {...menu} setNode={setNode} />}
       {node && <Panel position="top-right"><NodeEditor key={node?.id} node={node} setNode={setNode} setNodes={setNodes} onChange={onChange} /></Panel>}

@@ -12,7 +12,7 @@ import { getRectOfNodes, getTransformForBounds } from 'reactflow'
 import { SVGIconContainer } from '../components/SVGIconContainer'
 import { controlState } from '../state'
 
-export default function ArchControls({ setNodes }) {
+export default function DiagramControls({ setNodes }) {
   // TODO: Sett adding mode while holding down ctrl ??
   const { adding, toggleAddingEdge, setAddingEdge } = controlState()
   const { project, getNodes } = useReactFlow()
