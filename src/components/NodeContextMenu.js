@@ -1,7 +1,7 @@
 import React, { useCallback } from 'react'
 import { uid } from 'uid'
 import { useReactFlow } from 'reactflow'
-import './ContextMenu.css'
+import './NodeContextMenu.css'
 
 export default function ContextMenu({ id, top, left, right, bottom, setNode, parentNode, ...props }) {
   const { getNode, setNodes, addNodes, setEdges, getNodes } = useReactFlow();

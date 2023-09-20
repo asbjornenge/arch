@@ -13,7 +13,7 @@ import { ONCHANGE_TIMEOUT } from './state'
 import ArchEdge from './components/Edge'
 import ArchNode from './components/Node'
 import NodeEditor from './components/NodeEditor' 
-import ContextMenu from './nodes/ContextMenu' 
+import NodeContextMenu from './components/NodeContextMenu' 
 import ArchControls from './nodes/ArchControls'
 import ArchConnectionLine from './nodes/ArchConnectionLine'
 import 'reactflow/dist/style.css'
@@ -208,7 +208,7 @@ export default function DiagramEditor({ offsetY, offsetX, setRfInstance, flow, o
       <MiniMap />
       <ArchControls setNodes={setNodes} />
       <Background />
-      {menu && <ContextMenu onClick={onPaneClick} {...menu} setNode={setNode} />}
+      {menu && <NodeContextMenu onClick={onPaneClick} {...menu} setNode={setNode} />}
       {node && <Panel position="top-right"><NodeEditor key={node?.id} node={node} setNode={setNode} setNodes={setNodes} onChange={onChange} /></Panel>}
     </ReactFlow>
   )
