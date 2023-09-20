@@ -6,8 +6,8 @@ import {
 } from 'reactflow'
 import { AiOutlineFileText } from 'react-icons/ai'
 import { controlState } from '../state'
-import { SVGIconContainer } from '../components/SVGIconContainer'
-import './ArchNode.css'
+import { SVGIconContainer } from './SVGIconContainer'
+import './Node.css'
 
 const connectionNodeIdSelector = (state) => state.connectionNodeId;
 const addingEdgeState = (state) => state.adding;
