@@ -13,6 +13,7 @@ import { ONCHANGE_TIMEOUT } from './state'
 import ArchEdge from './components/Edge'
 import ArchNode from './components/Node'
 import NodeEditor from './components/NodeEditor' 
+import EdgeEditor from './components/EdgeEditor' 
 import NodeContextMenu from './components/NodeContextMenu' 
 import EdgeContextMenu from './components/EdgeContextMenu' 
 import DiagramControls from './components/DiagramControls'
@@ -184,8 +185,6 @@ export default function DiagramEditor({ offsetY, offsetX, setRfInstance, flow, o
     let top = event.clientY - offsetY
     let left = event.clientX - offsetX
 
-    console.log(event, edge)
-
     setEdgeMenu({
       id: edge.id,
       top: top,
@@ -229,7 +228,7 @@ export default function DiagramEditor({ offsetY, offsetX, setRfInstance, flow, o
       {nodeMenu && <NodeContextMenu onClick={onPaneClick} {...nodeMenu} setNode={setNode} />}
       {edgeMenu && <EdgeContextMenu onClick={onPaneClick} {...edgeMenu} setEdge={setEdge} />}
       {node && <Panel position="top-right"><NodeEditor key={node?.id} node={node} setNode={setNode} setNodes={setNodes} onChange={onChange} /></Panel>}
-      {edge && <Panel position="top-right">Edge editor</Panel>}
+      {edge && <Panel position="top-right"><EdgeEditor key={edge?.id} edge={edge} setEdge={setEdge} setEdges={setEdges} onChange={onChange} /></Panel>}
     </ReactFlow>
   )
 }

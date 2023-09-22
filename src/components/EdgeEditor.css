@@ -1,0 +1,36 @@
+.EdgeEditor {
+  border: 1px solid red;
+  display: flex;
+  flex-direction: column;
+  padding: 10px;
+  border: 1px solid var(--color-border-grey);
+  border-radius: 5px;
+  background-color: white;
+  gap: 2px;
+}
+
+.EdgeEditor .buttons {
+  margin-top: 10px;
+}
+
+.EdgeEditor label {
+  font-size: 0.7em;
+  color: var(--color-text-grey);
+  margin-top: 5px;
+}
+
+.EdgeEditor input {
+  border: 1px solid var(--color-border-grey);
+  padding: 5px 0px;
+  text-indent: 5px;
+}
+
+.EdgeEditor input.error {
+  color: red;
+}
+
+.EdgeEditor textarea {
+  height: 100px;
+  font-size: 0.8em;
+  resize: none;
+}
