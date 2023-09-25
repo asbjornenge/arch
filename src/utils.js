@@ -1,4 +1,4 @@
-import { Position, MarkerType } from 'reactflow';
+import { Position } from 'reactflow';
 
 // this helper function returns the intersection point
 // of the line between the center of the intersectionNode and the target node
@@ -78,33 +78,3 @@ export function getEdgeParams(source, target) {
     targetPos,
   };
 }
-
-export function createNodesAndEdges() {
-  const nodes = [];
-  const edges = [];
-  const center = { x: window.innerWidth / 2, y: window.innerHeight / 2 };
-
-  nodes.push({ id: 'target', data: { label: 'Target' }, position: center });
-
-  for (let i = 0; i < 8; i++) {
-    const degrees = i * (360 / 8);
-    const radians = degrees * (Math.PI / 180);
-    const x = 250 * Math.cos(radians) + center.x;
-    const y = 250 * Math.sin(radians) + center.y;
-
-    nodes.push({ id: `${i}`, data: { label: 'Source' }, position: { x, y } });
-
-    edges.push({
-      id: `edge-${i}`,
-      target: 'target',
-      source: `${i}`,
-      type: 'floating',
-      markerEnd: {
-        type: MarkerType.Arrow,
-      },
-    });
-  }
-
-  return { nodes, edges };
-}
-

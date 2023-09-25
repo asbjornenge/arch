@@ -5,8 +5,6 @@ import './NodeContextMenu.css'
 export default function ContextMenu({ id, top, left, right, bottom, setEdge, ...props }) {
   const { getEdge, setEdges } = useReactFlow();
 
-//  const node = getEdge(id)
-
   const deleteEdge = useCallback(() => {
     setEdges((edges) => edges.filter((edge) => edge.id !== id))
   }, [id, setEdges]);

@@ -1,6 +1,5 @@
 import { useCallback } from 'react';
-import { useStore, getStraightPath, EdgeLabelRenderer } from 'reactflow';
-//import { EdgeProps, getBezierPath, EdgeLabelRenderer, BaseEdge } from 'reactflow';
+import { useStore, getStraightPath } from 'reactflow';
 
 import { getEdgeParams } from '../utils.js';
 
@@ -27,35 +26,14 @@ function FloatingEdge({ id, data, source, target, markerEnd, style }) {
     _style.stroke = `rgba(${c.r},${c.g},${c.b},${c.a})`
   }
 
-  let label_y_pos = sy
-  if (sy > ty) label_y_pos -= Math.abs(sy-ty)/2
-  if (sy <= ty) label_y_pos += Math.abs(sy-ty)/2
-  let label_x_pos = sx
-  if (sx > tx) label_x_pos -= Math.abs(sx-tx)/2
-  if (sx <= tx) label_x_pos += Math.abs(sx-tx)/2
-
-  let label_style = {
-    background: 'red',
-    fontSize: '2em'
-  }
-
   return (
-    <>
-      <path
-        d={edgePath}
-        id={id}
-        style={_style}
-        markerEnd={markerEnd}
-        className="react-flow__edge-path"
-      />
-      <text 
-        x={label_x_pos} 
-        y={label_y_pos} 
-        style={label_style}
-        text-anchor="middle" 
-        dominant-baseline="middle"
-      >{data?.label}</text>
-    </>
+    <path
+      d={edgePath}
+      id={id}
+      style={_style}
+      markerEnd={markerEnd}
+      className="react-flow__edge-path"
+    />
   )
 }
 
