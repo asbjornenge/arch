@@ -2,6 +2,7 @@ const path = require('path')
 const fs = require('fs')
 const { mdToPdf } = require('md-to-pdf')
 const { app, shell, BrowserWindow, ipcMain, dialog } = require('electron')
+const languageDetect = require('language-detect')
 
 function createWindow() {
   const win = new BrowserWindow({
@@ -128,6 +129,19 @@ app.whenReady().then(() => {
       pathExists = false
     }
     return pathExists
+  })
+  ipcMain.handle('read', async (event, path) => {
+    const read = () => new Promise((resolve, reject) => {
+      fs.readFile(path, 'utf-8', function (err, data) {
+        if (err) return reject(err)
+        resolve(data)
+      })
+    })
+    const data = await read()
+    return data
+  })
+  ipcMain.handle('filetype', async (event, filename) => {
+    return languageDetect.filename(filename)
   })
 })
 

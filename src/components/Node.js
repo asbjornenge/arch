@@ -5,7 +5,10 @@ import {
   NodeResizeControl 
 } from 'reactflow'
 import { AiOutlineFileText } from 'react-icons/ai'
-import { controlState } from '../state'
+import { 
+  codeState, 
+  controlState,
+} from '../state'
 import { SVGIconContainer } from './SVGIconContainer'
 import './Node.css'
 
@@ -19,6 +22,7 @@ const resizeControlStyle = {
 export default function CustomNode({ id, data, selected }) {
   const connectionNodeId = useStore(connectionNodeIdSelector)
   const isAddingEdge = controlState(addingEdgeState)
+  const { setCodeFile } = codeState()
 
   const isTarget = connectionNodeId && connectionNodeId !== id;
 
@@ -44,10 +48,17 @@ export default function CustomNode({ id, data, selected }) {
     nodeStyle.color = `rgba(${c.r},${c.g},${c.b},${c.a})`
   }
 
+  const handleEditFile = () => {
+    if (!data?.file) return
+    if (!!!data?.fileExists) return
+    // TODO: Add root path here!? Needs full path!?
+    setCodeFile(data.file)
+  }
+
   return (
     <div className={archNodeClasses} style={nodeStyle}>
       { data?.file &&
-        <SVGIconContainer className={`fileIndicator ${!!!data?.fileExists ? 'missing' : ''}`} size={15}>
+        <SVGIconContainer className={`fileIndicator ${!!!data?.fileExists ? 'missing' : ''}`} size={15} onClick={handleEditFile}>
           <AiOutlineFileText />
         </SVGIconContainer>
       }

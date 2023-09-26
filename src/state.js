@@ -10,6 +10,19 @@ export const fileState = create((set) => ({
   setFile: (file) => set((state) => ({ file: file }))
 }))
 
+export const codeState = create((set) => ({
+  code: '',
+  file: null,
+  language: '',
+  setCode: (code) => set((state) => ({ ...state, code: code})),
+  resetCodeState: () => set((state) => ({ code: '', file: null, language: '' })),
+  setCodeFile: async (file) => {
+    const code = await window.electron.readFile(file)
+    const language = await window.electron.fileType(file)
+    set((state) => ({ ...state, file: file, code: code, language: language }))
+  },
+}))
+
 export const controlState = create((set) => ({
   adding: false,
   toggleAddingEdge: () => set((state) => ({ adding: !state.adding })),

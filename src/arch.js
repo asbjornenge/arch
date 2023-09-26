@@ -9,12 +9,14 @@ import {
   AiOutlineFolderOpen, 
 } from 'react-icons/ai'
 import Settings from './settings.js'
+import CodeEditor from './code.js'
 import NotesEditor from './notes.js'
 import DiagramEditor from './diagram.js'
 import archLogoSvg from './graphics/logo.svg'
 import { SVGIconContainerButton } from './components/SVGIconContainer'
 import { 
   fileState, 
+  codeState,
   TOP_HEIGHT, 
   historyState, 
   MAX_HISTORY_SHAPSHOTS, 
@@ -30,6 +32,7 @@ const getSize = () => {
 
 export default function Arch() {
   const { file, setFile } = fileState() 
+  const { file: codeFile, resetCodeState } = codeState()
   const { history, addSnapshot, clearHistory } = historyState() 
   const [size, setSize] = useState(getSize())
   const [flow, setFlow] = useState(null)
@@ -106,6 +109,10 @@ export default function Arch() {
 
   const handleExternalLink = async (url) => {
     await window.electron.openExternalLink(url)
+  }
+
+  const handleCloseCodeEditor = async () => {
+    resetCodeState() 
   }
 
   const handleChange = (prop, val) => {
@@ -215,7 +222,17 @@ export default function Arch() {
             <SVGIconContainerButton onClick={handleSaveFile} iconsize={17} disabled={!hasDiff}>
               <AiOutlineSave />
             </SVGIconContainerButton>
+            { !codeFile &&
             <FileName>{fileName}</FileName>
+            }
+            { codeFile &&
+              <>
+              <FileName>{codeFile}</FileName>
+              <SVGIconContainerButton onClick={handleCloseCodeEditor} iconsize={17}>
+                <AiOutlineSave />
+              </SVGIconContainerButton>
+              </>
+            }
           </TopLeft>
           <PanSelector>
             <Pan selected={panning === 'notes'} onClick={() => setPanning('notes')}>Notes</Pan>
@@ -237,7 +254,12 @@ export default function Arch() {
       }
       <Workspace>
         <MarkdownSpace width={markdownWidth} height={workspaceHeight} hidden={['both', 'notes'].indexOf(panning) < 0}>
-          <NotesEditor height={workspaceHeight} markdown={markdown} setMarkdown={setMarkdown} onChange={handleChange} />
+          { !codeFile &&
+            <NotesEditor height={workspaceHeight} markdown={markdown} setMarkdown={setMarkdown} onChange={handleChange} />
+          }
+          { codeFile &&
+            <CodeEditor height={workspaceHeight} />
+          }
         </MarkdownSpace>
         <DiagramSpace width={diagramWidth} height={workspaceHeight} hidden={['both', 'diagram'].indexOf(panning) < 0}>
           <ReactFlowProvider>

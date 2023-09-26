@@ -11,4 +11,6 @@ contextBridge.exposeInMainWorld('electron', {
   openExternalLink: (url) => ipcRenderer.invoke('link', url),
   fileExists: (filepath) => ipcRenderer.invoke('exists', filepath),
   touchFile: (filepath) => ipcRenderer.invoke('touch', filepath),
+  readFile: (filepath) => ipcRenderer.invoke('read', filepath),
+  fileType: (filename) => ipcRenderer.invoke('filetype', filename),
 })
