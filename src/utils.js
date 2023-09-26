@@ -1,4 +1,16 @@
 import { Position } from 'reactflow';
+import { uid } from 'uid'
+
+export const addNode = ({ project, setNodes, position={ x: 0, y: 0 } }) => {
+    const id = uid(8)
+    const newNode = {
+      id,
+      position: project(position),
+      data: { label: id },
+      type: 'arch'
+    }
+    setNodes((nds) => nds.concat(newNode))
+  }
 
 // this helper function returns the intersection point
 // of the line between the center of the intersectionNode and the target node

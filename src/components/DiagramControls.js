@@ -4,13 +4,13 @@ import {
   ControlButton,
   useReactFlow
 } from 'reactflow'
-import { uid } from 'uid'
 import { FiArrowUpRight } from 'react-icons/fi'
 import { AiOutlineDownload, AiOutlineAppstoreAdd } from 'react-icons/ai'
 import { toPng } from 'html-to-image'
 import { getRectOfNodes, getTransformForBounds } from 'reactflow'
 import { SVGIconContainer } from '../components/SVGIconContainer'
 import { controlState } from '../state'
+import { addNode } from '../utils'
 
 export default function DiagramControls({ setNodes }) {
   // TODO: Sett adding mode while holding down ctrl ??
@@ -40,18 +40,6 @@ export default function DiagramControls({ setNodes }) {
 
   const edgeAddingStyle = {}
   if (adding) edgeAddingStyle.backgroundColor = 'var(--color-bg-dark-grey)' 
-
-  const handleAddNode = () => {
-    const id = uid(8)
-    const newNode = {
-      id,
-      // we are removing the half of the node width (75) to center the new node
-      position: project({ x: 0, y: 0 }),
-      data: { label: id },
-      type: 'arch'
-    }
-    setNodes((nds) => nds.concat(newNode))
-  }
 
   const handleSaveDiagram = async () => {
     // we calculate a transform for the nodes so that all nodes are visible
@@ -91,7 +79,7 @@ export default function DiagramControls({ setNodes }) {
           <FiArrowUpRight />
         </SVGIconContainer>
       </ControlButton>
-      <ControlButton onClick={handleAddNode} title="new node">
+      <ControlButton onClick={() => addNode({ project, setNodes })} title="new node">
         <SVGIconContainer iconsize={15}>
           <AiOutlineAppstoreAdd />
         </SVGIconContainer>

@@ -9,7 +9,11 @@ import ReactFlow, {
   useNodesState,
   useEdgesState,
 } from 'reactflow'
-import { ONCHANGE_TIMEOUT } from './state'
+import { addNode } from './utils'
+import { 
+  TOP_HEIGHT,
+  ONCHANGE_TIMEOUT 
+} from './state'
 import ArchEdge from './components/Edge'
 import ArchNode from './components/Node'
 import NodeEditor from './components/NodeEditor' 
@@ -45,7 +49,7 @@ const defaultEdgeOptions = {
   },
 }
 
-export default function DiagramEditor({ offsetY, offsetX, setRfInstance, flow, onChange, onUndo, onRedo, settings }) {
+export default function DiagramEditor({ offsetY, offsetX, setRfInstance, flow, onChange, onUndo, onRedo, settings, notesWidth }) {
   // eslint-disable-next-line
   const ref = useRef(null)
   const dragRef = useRef(null)
@@ -54,9 +58,10 @@ export default function DiagramEditor({ offsetY, offsetX, setRfInstance, flow, o
   const [target, setTarget] = useState(null)
   const [nodeMenu, setNodeMenu] = useState(null)
   const [edgeMenu, setEdgeMenu] = useState(null)
+  const [mousePos, setMousePos] = useState({x: 0, y: 0})
   const [nodes, setNodes, onNodesChange] = useNodesState([])
   const [edges, setEdges, onEdgesChange] = useEdgesState([])
-  const { setViewport, getNode } = useReactFlow()
+  const { project, setViewport, getNode } = useReactFlow()
 
   const onConnect = useCallback((params) => {
     setEdges((eds) => addEdge(params, eds))
@@ -192,6 +197,28 @@ export default function DiagramEditor({ offsetY, offsetX, setRfInstance, flow, o
     })
   }
 
+  const handleSetMousePos = useCallback((e) => {
+    setMousePos({
+      x: e.clientX - notesWidth,
+      y: e.clientY - TOP_HEIGHT
+    })
+  }, [notesWidth])
+
+  const handleAddNode = useCallback((e) => {
+    if (e.keyCode === 78 && e.ctrlKey) {
+      e.preventDefault()
+      e.stopPropagation()
+      addNode({ project, setNodes, position: mousePos })
+    }
+  }, [project, setNodes, mousePos])
+
+  useEffect(() => {
+    window.addEventListener('keydown', handleAddNode)
+    return () => {
+      window.removeEventListener('keydown', handleAddNode)
+    }
+  }, [handleAddNode])
+
   const onPaneClick = useCallback(() => { 
     setNodeMenu(null)
     setEdgeMenu(null)
@@ -215,6 +242,7 @@ export default function DiagramEditor({ offsetY, offsetX, setRfInstance, flow, o
       onNodesChange={handleNodesChange}
       onEdgesChange={handleEdgesChange}
       onNodeDragStop={onNodeDragStop}
+      onPaneMouseMove={handleSetMousePos}
       onNodeDragStart={onNodeDragStart}
       onNodeContextMenu={onNodeContextMenu}
       onEdgeContextMenu={onEdgeContextMenu}

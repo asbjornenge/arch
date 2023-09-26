@@ -195,7 +195,10 @@ export default function Arch() {
   let diagramWidth = size.width - markdownWidth
   const workspaceHeight = size.height - TOP_HEIGHT - WORKSPACE_HEIGHT_MARGIN
   if (panning === 'notes') markdownWidth = size.width
-  if (panning === 'diagram') diagramWidth = size.width
+  if (panning === 'diagram') {
+    diagramWidth = size.width
+    markdownWidth = 0
+  }
   let fileName = ''
   if (file) fileName = file.split('/')[file.split('/').length-1]
   const hasDiff = archHash !== fileHash
@@ -244,6 +247,7 @@ export default function Arch() {
               offsetX={size.width - diagramWidth} 
               settings={settings}
               onChange={handleChange} 
+              notesWidth={markdownWidth}
               setRfInstance={setRfInstance}
             />
           </ReactFlowProvider>

@@ -18,7 +18,6 @@ export default function EdgeEditor({ edge, setEdge, setEdges, onChange, ...props
             color : arrowColor, 
             type : "arrowclosed"
           }
-          console.log(e)
         }
         return e
       })
@@ -27,10 +26,10 @@ export default function EdgeEditor({ edge, setEdge, setEdges, onChange, ...props
 
   const handleClose = () => { 
     setEdge(null)
-//    clearTimeout(window.nodeChangeTimeout)
-//    window.nodeChangeTimeout= setTimeout(() => {
-//      onChange('edge')
-//    }, 1000)
+    clearTimeout(window.nodeChangeTimeout)
+    window.nodeChangeTimeout= setTimeout(() => {
+      onChange('edge')
+    }, 1000)
   }
 
   return (
