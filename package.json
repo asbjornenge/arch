@@ -1,7 +1,10 @@
 {
-  "name": "arch",
-  "version": "0.1.0",
+  "name": "Arch",
+  "version": "1.0.0",
+  "description": "Simple software architecture",
+  "author": "Asbjorn Enge <asbjorn@surflabs.net>",
   "private": true,
+  "homepage": ".",
   "main": "public/electron.js",
   "dependencies": {
     "@monaco-editor/react": "^4.5.2",
@@ -30,7 +33,9 @@
     "build": "react-scripts build",
     "test": "react-scripts test",
     "eject": "react-scripts eject",
-    "electron": "electron ."
+    "electron": "electron .",
+    "app:dir": "electron-builder --dir",
+    "app:dist": "electron-builder"
   },
   "eslintConfig": {
     "extends": [
@@ -53,7 +58,37 @@
   "devDependencies": {
     "concurrently": "^8.2.1",
     "electron": "^26.1.0",
+    "electron-builder": "^24.6.4",
     "electron-is-dev": "^2.0.0",
     "wait-on": "^7.0.1"
+  },
+  "build": {
+    "appId": "arch",
+    "directories": {
+      "output": "dist",
+      "buildResources": "resources"
+    },
+    "dmg": {
+      "contents": [
+        {
+          "x": 110,
+          "y": 150
+        },
+        {
+          "x": 240,
+          "y": 150,
+          "type": "link",
+          "path": "/Applications"
+        }
+      ]
+    },
+    "linux": {
+      "target": [
+        "AppImage"
+      ]
+    },
+    "win": {
+      "target": "NSIS"
+    }
   }
 }
