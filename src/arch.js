@@ -7,6 +7,7 @@ import {
   AiOutlineGithub, 
   AiOutlineSetting,
   AiOutlineFolderOpen, 
+  AiOutlineCloseCircle
 } from 'react-icons/ai'
 import Settings from './settings.js'
 import CodeEditor from './code.js'
@@ -32,7 +33,7 @@ const getSize = () => {
 
 export default function Arch() {
   const { file, setFile } = fileState() 
-  const { file: codeFile, resetCodeState } = codeState()
+  const { file: codeFile, changed: codeChanged, getCode, setCodeChanged, resetCodeState } = codeState()
   const { history, addSnapshot, clearHistory } = historyState() 
   const [size, setSize] = useState(getSize())
   const [flow, setFlow] = useState(null)
@@ -107,6 +108,12 @@ export default function Arch() {
     setArchHash(contentHash)
   },[file, getContent, handleSaveFileDialog])
 
+  const handleSaveCodeFile = useCallback(async () => {
+    const code = getCode()
+    await window.electron.saveFile(codeFile, code)
+    setCodeChanged(false)
+  },[setCodeChanged, codeFile, getCode])
+
   const handleExternalLink = async (url) => {
     await window.electron.openExternalLink(url)
   }
@@ -180,9 +187,12 @@ export default function Arch() {
     if (e.keyCode === 83 && e.ctrlKey) {
       e.preventDefault()
       e.stopPropagation()
-      await handleSaveFile()
+      if (!codeFile)
+        await handleSaveFile()
+      else
+        await handleSaveCodeFile()
     }
-  }, [handleSaveFile])
+  }, [handleSaveFile, handleSaveCodeFile, codeFile])
 
   useEffect(() => {
     window.addEventListener('resize', handleResize)
@@ -208,7 +218,14 @@ export default function Arch() {
   }
   let fileName = ''
   if (file) fileName = file.split('/')[file.split('/').length-1]
-  const hasDiff = archHash !== fileHash
+  let hasDiff = archHash !== fileHash
+  let fileSaver = handleSaveFile
+  if (codeFile) {
+    hasDiff = codeChanged
+    fileName = codeFile.split('/')[codeFile.split('/').length-1]
+    fileSaver = handleSaveCodeFile
+  }
+
 
   return (
     <Wrapper>
@@ -219,23 +236,18 @@ export default function Arch() {
             <SVGIconContainerButton onClick={handleOpenFile} size={20}>
               <AiOutlineFolderOpen />
             </SVGIconContainerButton>
-            <SVGIconContainerButton onClick={handleSaveFile} iconsize={17} disabled={!hasDiff}>
+            <SVGIconContainerButton onClick={fileSaver} iconsize={17} disabled={!hasDiff}>
               <AiOutlineSave />
             </SVGIconContainerButton>
-            { !codeFile &&
             <FileName>{fileName}</FileName>
-            }
             { codeFile &&
-              <>
-              <FileName>{codeFile}</FileName>
               <SVGIconContainerButton onClick={handleCloseCodeEditor} iconsize={17}>
-                <AiOutlineSave />
+                <AiOutlineCloseCircle />
               </SVGIconContainerButton>
-              </>
             }
           </TopLeft>
           <PanSelector>
-            <Pan selected={panning === 'notes'} onClick={() => setPanning('notes')}>Notes</Pan>
+            <Pan selected={panning === 'notes'} onClick={() => setPanning('notes')}>{ codeFile ? 'Code' : 'Notes'}</Pan>
             <Pan selected={panning === 'both'} onClick={() => setPanning('both')}>Both</Pan>
             <Pan selected={panning === 'diagram'} onClick={() => setPanning('diagram')}>Diagram</Pan>
           </PanSelector>

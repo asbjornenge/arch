@@ -10,11 +10,14 @@ export const fileState = create((set) => ({
   setFile: (file) => set((state) => ({ file: file }))
 }))
 
-export const codeState = create((set) => ({
+export const codeState = create((set, get) => ({
   code: '',
   file: null,
+  changed: false,
   language: '',
+  getCode: () => get().code,
   setCode: (code) => set((state) => ({ ...state, code: code})),
+  setCodeChanged: (changed) => set((state) => ({ ...state, changed: changed })),
   resetCodeState: () => set((state) => ({ code: '', file: null, language: '' })),
   setCodeFile: async (file) => {
     const code = await window.electron.readFile(file)

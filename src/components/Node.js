@@ -7,6 +7,7 @@ import {
 import { AiOutlineFileText } from 'react-icons/ai'
 import { 
   codeState, 
+  fileState,
   controlState,
 } from '../state'
 import { SVGIconContainer } from './SVGIconContainer'
@@ -22,6 +23,7 @@ const resizeControlStyle = {
 export default function CustomNode({ id, data, selected }) {
   const connectionNodeId = useStore(connectionNodeIdSelector)
   const isAddingEdge = controlState(addingEdgeState)
+  const { file: rootFile } = fileState()
   const { setCodeFile } = codeState()
 
   const isTarget = connectionNodeId && connectionNodeId !== id;
@@ -51,8 +53,12 @@ export default function CustomNode({ id, data, selected }) {
   const handleEditFile = () => {
     if (!data?.file) return
     if (!!!data?.fileExists) return
-    // TODO: Add root path here!? Needs full path!?
-    setCodeFile(data.file)
+    if (!rootFile) return
+    let path = rootFile.split('/')
+    path.splice(-1)
+    path.push(data.file)
+    path = path.join('/')
+    setCodeFile(path)
   }
 
   return (
