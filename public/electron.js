@@ -21,7 +21,7 @@ function createWindow() {
     protocol: "file:",
     slashes: true,
   })
-  : "http://localhost:3000"
+  : "http://localhost:3000" 
 
   win.loadURL(appURL)
 }
