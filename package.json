@@ -36,7 +36,7 @@
     "electron": "electron .",
     "app:dir": "electron-builder --dir",
     "app:dist": "electron-builder",
-    "app:release": "electron-builder -p onTag"
+    "release": "electron-builder"
   },
   "eslintConfig": {
     "extends": [
