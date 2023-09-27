@@ -10,9 +10,7 @@ Arch is built using [Electron](https://www.electronjs.org/) and [React](https://
 
 ## Diagram
 
-For drawing diagrams we use the fantastic [ReactFlow](https://reactflow.dev/) library. Boxes can have different shapes, colors etc.
-
-Boxes can also be groups.
+For drawing diagrams we use the fantastic [ReactFlow](https://reactflow.dev/) library. Boxes can have different shapes, colors, be groups etc.
 
 Boxes can also have files attached to them. Files that exist can be opened in a simple *code editor*.
 
