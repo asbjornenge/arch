@@ -2,11 +2,11 @@
 
 Simplify your architecture.
 
-![logo](resources/icon.png | width=100)
-
 Arch is an architectural editor for any project. Draw your diagrams and write documentation in one simple app :tada: 
 
 Arch is built using [Electron](https://www.electronjs.org/) and [React](https://react.dev/).
+
+![screenshit](resources/screenshot.png)
 
 ## Diagram
 
