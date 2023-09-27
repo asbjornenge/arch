@@ -24,3 +24,6 @@ yarn-debug.log*
 yarn-error.log*
 
 *.swp
+
+# tokens and stuffs
+setghtoken.ps1
