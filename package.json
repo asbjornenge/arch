@@ -1,6 +1,6 @@
 {
   "name": "Arch",
-  "version": "1.0.0",
+  "version": "1.0.1",
   "description": "Simple software architecture",
   "author": "Asbjorn Enge <asbjorn@surflabs.net>",
   "private": true,
@@ -87,7 +87,9 @@
       "target": [
         "AppImage"
       ],
-      "publish": ["github"]
+      "publish": [
+        "github"
+      ]
     },
     "win": {
       "target": "NSIS"
