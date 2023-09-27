@@ -2,7 +2,7 @@
 
 Simplify your architecture.
 
-![logo](resources/icon.png)
+![logo](resources/icon.png | width=100)
 
 Arch is an architectural editor for any project. Draw your diagrams and write documentation in one simple app :tada: 
 
