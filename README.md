@@ -26,4 +26,9 @@ For opening and editing files attached to boxes we use the [React Monaco Editor]
 
 Files should be saved with the .arch suffix. The `.arch` files are JSON files with a particular struct that Arch understands.
 
+## Export
+
+Diagram export as `.png`.  
+Notes export as `.pdf`.
+
 enjoy.
