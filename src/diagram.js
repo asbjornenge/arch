@@ -12,7 +12,8 @@ import ReactFlow, {
 import { addNode } from './utils'
 import { 
   TOP_HEIGHT,
-  ONCHANGE_TIMEOUT 
+  ONCHANGE_TIMEOUT,
+  controlState 
 } from './state'
 import ArchEdge from './components/Edge'
 import ArchNode from './components/Node'
@@ -62,6 +63,7 @@ export default function DiagramEditor({ offsetY, offsetX, setRfInstance, flow, o
   const [nodes, setNodes, onNodesChange] = useNodesState([])
   const [edges, setEdges, onEdgesChange] = useEdgesState([])
   const { project, setViewport, getNode } = useReactFlow()
+  const { adding } = controlState()
 
   const onConnect = useCallback((params) => {
     setEdges((eds) => addEdge(params, eds))
@@ -172,6 +174,7 @@ export default function DiagramEditor({ offsetY, offsetX, setRfInstance, flow, o
   }, [flow, setNodes, setEdges, setViewport])
 
   const onNodeContextMenu = (event, node) => {
+    if (adding) return
     event.preventDefault();
 
     let top = event.clientY - offsetY
